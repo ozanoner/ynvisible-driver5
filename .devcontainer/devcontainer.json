@@ -1,0 +1,49 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.183.0/containers/ubuntu
+{
+	"name": "ESP-IDF v5.4.1",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	// Add the IDs of extensions you want installed when the container is created.
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-vscode.cpptools",
+				"espressif.esp-idf-extension",
+				"Wokwi.wokwi-vscode",
+				"ms-vscode.cpptools-extension-pack",
+				"ms-vscode.cmake-tools",
+				"codeium.codeium",
+				"cschlosser.doxdocgen",
+				"tomoki1207.pdf"
+			],
+			"settings": {
+				"editor.formatOnSaveMode": "file",
+				"editor.formatOnSave": true,
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"idf.espIdfPath": "/opt/esp/idf",
+				"idf.customExtraPaths": "",
+				"idf.pythonBinPath": "/opt/esp/python_env/idf5.4_py3.12_env/bin/python",
+				"idf.toolsPath": "/opt/esp",
+				"idf.gitPath": "/usr/bin/git"
+			}
+		}
+	},
+	"workspaceMount": "source=${localWorkspaceFolder},target=/workspaces,type=bind",
+	/* the path of workspace folder to be opened after container is running
+	 */
+	"workspaceFolder": "/workspaces",
+	"mounts": [
+		"source=extensionCache,target=/root/.vscode-server/extensions,type=volume",
+		"source=/dev,target=/dev,type=bind",
+		"source=${env:HOME}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
+	],
+	"runArgs": [
+		"--privileged"
+	],
+	"containerEnv": {
+		"LC_ALL": "C.UTF-8",
+		"LANG": "C.UTF-8"
+	}
+}

@@ -1,0 +1,21 @@
+Language: Cpp
+BasedOnStyle: Google
+AccessModifierOffset: -1
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AllowShortEnumsOnASingleLine: false
+AllowShortBlocksOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: Inline
+BreakBeforeBraces: Allman
+ColumnLimit: 120
+IndentWidth: 4
+PointerAlignment: Left
+QualifierOrder: [static, inline, type, const, volatile]
+ReorderRequires: true
+SortIncludes: true
+SpaceBeforeParens: ControlStatements
+SpaceBeforeCpp11BracedList: true
+SpaceInEmptyBlock: true
+UseTab: Never
