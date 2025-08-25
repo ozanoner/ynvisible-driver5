@@ -1,6 +1,8 @@
 
 #include "app_gui.hpp"
 
+#include <array>
+
 #include "bsp/esp-bsp.h"
 #include "esp_log.h"
 #include "lvgl.h"
@@ -25,90 +27,27 @@ esp_err_t Gui::init()
 
 esp_err_t Gui::show()
 {
+    const std::array<lv_dir_t, evalkit::DisplayInfo::DISP_CNT> dispDirs = {
+        static_cast<lv_dir_t>(LV_DIR_BOTTOM | LV_DIR_RIGHT), static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
+        static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
+        static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
+        static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
+        static_cast<lv_dir_t>(LV_DIR_TOP | LV_DIR_RIGHT)};
+
     bsp_display_lock(0);
 
     lv_obj_t* tv = lv_tileview_create(lv_screen_active());
 
-    // Create tile for DISP431V2PV1
-    lv_obj_t* tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP431V2PV1,
-                                           static_cast<lv_dir_t>(LV_DIR_BOTTOM | LV_DIR_RIGHT));
-    lv_obj_t* img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP431V2PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP431V2PV1);
-
-    // Create tile for DISP433V1PV1
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP433V1PV1,
-                                 static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP433V1PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP433V1PV1);
-
-    // create tile for DISP434V1PV1
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP434V1PV1,
-                                 static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP434V1PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP434V1PV1);
-
-    // create tile for DISP437V2PV1
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP437V2PV1,
-                                 static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP437V2PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP437V2PV1);
-
-    // create tile for DISP438V2PV1
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP438V2PV1,
-                                 static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP438V2PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP438V2PV1);
-
-    // create tile for DISP440V2PV1
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP440V2PV1,
-                                 static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP440V2PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP440V2PV1);
-
-    // create tile for DISP442V2PV1
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP442V2PV1,
-                                 static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP442V2PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP442V2PV1);
-
-    // create tile for DISP443V2PV1
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP443V2PV1,
-                                 static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP443V2PV1));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP443V2PV1);
-
-    // create tile for DISP444V1PV2
-    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DisplayInfo::DISP444V1PV2,
-                                 static_cast<lv_dir_t>(LV_DIR_TOP | LV_DIR_RIGHT));
-    img1  = lv_image_create(tile1);
-    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DisplayInfo::DISP444V1PV2));
-    lv_obj_center(img1);
-    // add animation buttons
-    addAnimationButtons(tv, evalkit::DisplayInfo::DISP444V1PV2);
+    for (size_t i = 0; i < dispDirs.size(); ++i)
+    {
+        // Create tile for each display
+        lv_obj_t* tile = lv_tileview_add_tile(tv, 0, static_cast<evalkit::DisplayInfo::Ecd_e>(i), dispDirs[i]);
+        lv_obj_t* img  = lv_image_create(tile);
+        lv_image_set_src(img, DISP_FILE_MAP.at(static_cast<evalkit::DisplayInfo::Ecd_e>(i)));
+        lv_obj_center(img);
+        // add animation buttons
+        addAnimationButtons(tv, static_cast<evalkit::DisplayInfo::Ecd_e>(i));
+    }
 
     bsp_display_unlock();
     return ESP_OK;
@@ -125,6 +64,13 @@ esp_err_t Gui::addAnimationButtons(lv_obj_t* tv, evalkit::DisplayInfo::Ecd_e dis
     {
         lv_obj_t* btn = lv_list_add_btn(list1, NULL, btnName);
     }
+
+    lv_obj_t* label1 = lv_label_create(tile1);
+    lv_label_set_recolor(label1, true);
+    lv_label_set_text(label1, "#ff0000 Animation#");
+    lv_obj_set_width(label1, 300);
+    lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_align(label1, LV_ALIGN_BOTTOM_MID, 0, -40);
 
     return ESP_OK;
 }
