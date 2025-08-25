@@ -13,6 +13,7 @@ namespace app
 {
 esp_err_t Gui::init()
 {
+    btnInfos.reserve(MAX_BTN_INFOS);
     /* Initialize display and LVGL */
     bsp_display_start();
 
@@ -53,24 +54,52 @@ esp_err_t Gui::show()
     return ESP_OK;
 }
 
+static void btnEventHandler(lv_event_t* e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    // Gui::BtnInfo*   btnInfo = static_cast<Gui::BtnInfo*>(lv_event_get_user_data(e));
+    // ESP_LOGI(Gui::TAG, "Button event: %d, btnName: %s", code, (btnInfo ? btnInfo->animBtnName : "unknown"));
+
+    if (code == LV_EVENT_VALUE_CHANGED)
+    {
+        Gui::BtnInfo& btnInfo = *static_cast<Gui::BtnInfo*>(lv_event_get_user_data(e));
+        ESP_LOGI(Gui::TAG, "Button event (%s)", btnInfo.animBtnName);
+
+        btnInfo.checked = !btnInfo.checked;
+        lv_label_set_text(btnInfo.statusLabel, btnInfo.checked ? "#00ff00 Playing#" : "#ff0000 Select#");
+
+        if (btnInfo.animHandler)
+        {
+            (*btnInfo.animHandler)(e);
+        }
+    }
+}
+
 esp_err_t Gui::addAnimationButtons(lv_obj_t* tv, evalkit::DisplayInfo::Ecd_e display)
 {
     // add a new tile for animation buttons
     lv_obj_t* tile1 = lv_tileview_add_tile(tv, 1, display, LV_DIR_LEFT);
+
+    // status label
+    lv_obj_t* label1 = lv_label_create(tile1);
+    lv_label_set_recolor(label1, true);
+    lv_label_set_text(label1, "#ff0000 Select#");
+    lv_obj_set_width(label1, 300);
+    lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_align(label1, LV_ALIGN_TOP_MID, 0, 20);
+
     // add anim buttons
     lv_obj_t* list1 = lv_list_create(tile1);
     lv_obj_set_size(list1, LV_PCT(100), LV_PCT(100));
     for (const auto& btnName : evalkit::DisplayInfo::DISP_ANIM_NAMES[display])
     {
-        lv_obj_t* btn = lv_list_add_btn(list1, NULL, btnName);
-    }
+        btnInfos.emplace_back(BtnInfo {display, btnName, nullptr, false, label1});
 
-    lv_obj_t* label1 = lv_label_create(tile1);
-    lv_label_set_recolor(label1, true);
-    lv_label_set_text(label1, "#ff0000 Animation#");
-    lv_obj_set_width(label1, 300);
-    lv_obj_set_style_text_align(label1, LV_TEXT_ALIGN_CENTER, 0);
-    lv_obj_align(label1, LV_ALIGN_BOTTOM_MID, 0, -40);
+        lv_obj_t* btn = lv_list_add_btn(list1, NULL, btnName);
+        lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
+        lv_obj_add_event_cb(btn, btnEventHandler, LV_EVENT_VALUE_CHANGED, &btnInfos.back());
+    }
+    lv_obj_align_to(list1, label1, LV_ALIGN_OUT_BOTTOM_MID, 0, 20);
 
     return ESP_OK;
 }
