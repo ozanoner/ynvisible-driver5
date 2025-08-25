@@ -57,7 +57,6 @@ esp_err_t Gui::show()
 static void btnEventHandler(lv_event_t* e)
 {
     lv_event_code_t code = lv_event_get_code(e);
-    // Gui::BtnInfo*   btnInfo = static_cast<Gui::BtnInfo*>(lv_event_get_user_data(e));
     // ESP_LOGI(Gui::TAG, "Button event: %d, btnName: %s", code, (btnInfo ? btnInfo->animBtnName : "unknown"));
 
     if (code == LV_EVENT_VALUE_CHANGED)
