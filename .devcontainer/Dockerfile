@@ -1,4 +1,4 @@
-FROM espressif/idf:v5.4.1
+FROM espressif/idf:v5.4
 
 RUN apt-get update && apt-get install -y clang-format vim-tiny
 RUN echo "source /opt/esp/idf/export.sh > /dev/null 2>&1" >> ~/.bashrc

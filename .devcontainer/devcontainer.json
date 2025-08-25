@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.183.0/containers/ubuntu
 {
-	"name": "ESP-IDF v5.4.1",
+	"name": "ESP-IDF v5.4",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
@@ -14,7 +14,6 @@
 				"Wokwi.wokwi-vscode",
 				"ms-vscode.cpptools-extension-pack",
 				"ms-vscode.cmake-tools",
-				"codeium.codeium",
 				"cschlosser.doxdocgen",
 				"tomoki1207.pdf"
 			],

@@ -116,3 +116,6 @@ sdkconfig.user
 
 # IDF-component manager output
 dist/
+
+# temporary files
+tmp/
