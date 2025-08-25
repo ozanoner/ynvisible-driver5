@@ -27,10 +27,51 @@ esp_err_t Gui::show()
 {
     bsp_display_lock(0);
 
-    lv_obj_t* tv    = lv_tileview_create(lv_screen_active());
-    lv_obj_t* tile1 = lv_tileview_add_tile(tv, 0, 0, LV_DIR_BOTTOM);
+    lv_obj_t* tv = lv_tileview_create(lv_screen_active());
+
+    lv_obj_t* tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP431V2PV1, LV_DIR_BOTTOM);
     lv_obj_t* img1  = lv_image_create(tile1);
     lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP431V2PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP433V1PV1, LV_DIR_VER);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP433V1PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP434V1PV1, LV_DIR_VER);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP434V1PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP437V2PV1, LV_DIR_VER);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP437V2PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP438V2PV1, LV_DIR_VER);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP438V2PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP440V2PV1, LV_DIR_VER);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP440V2PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP442V2PV1, LV_DIR_VER);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP442V2PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP443V2PV1, LV_DIR_VER);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP443V2PV1));
+    lv_obj_center(img1);
+
+    tile1 = lv_tileview_add_tile(tv, 0, evalkit::DISP444V1PV2, LV_DIR_TOP);
+    img1  = lv_image_create(tile1);
+    lv_image_set_src(img1, DISP_FILE_MAP.at(evalkit::DISP444V1PV2));
     lv_obj_center(img1);
 
     bsp_display_unlock();
