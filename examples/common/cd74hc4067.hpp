@@ -39,6 +39,8 @@ class CD74HC4067
     esp_err_t write(bool high);  // digital write
     esp_err_t releaseWrite();    // release resources
 
+    static constexpr const char* TAG = "CD74HC4067";
+
    private:
     Config m_config;
     bool   m_initialised;
