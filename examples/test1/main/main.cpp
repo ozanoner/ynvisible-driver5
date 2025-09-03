@@ -15,7 +15,7 @@ extern "C" void app_main(void)
     ESP_LOGI(TAG, "Hello World!");
 
     app::hal::CD74HC4067 mux;
-    // app::hal::MCP4725    dac;
+    app::hal::MCP4725    dac;
 
     ESP_ERROR_CHECK(mux.init({.s0     = GPIO_NUM_11,
                               .s1     = GPIO_NUM_9,
@@ -24,8 +24,12 @@ extern "C" void app_main(void)
                               .signal = GPIO_NUM_10,
                               .enable = GPIO_NUM_12}));
 
-    // dac.init(
-    //     {.i2cPort = 0, .i2cAddr = 0x60, .i2cSdaGpio = GPIO_NUM_20, .i2cSclGpio = GPIO_NUM_21, .i2cFreqHz = 100000});
+    ESP_ERROR_CHECK(dac.init({.busHandle  = nullptr,  // reuse from BSP in the demo
+                              .i2cPort    = 0,
+                              .i2cAddr    = 0x60,
+                              .i2cSdaGpio = GPIO_NUM_38,
+                              .i2cSclGpio = GPIO_NUM_41,
+                              .i2cFreqHz  = 100000}));
 
     bool     writeVal = true;
     uint16_t dacValue = 0;
@@ -42,8 +46,18 @@ extern "C" void app_main(void)
             ESP_LOGI(TAG, "Channel-1 ADC value: %" PRIu16, val);
         }
         vTaskDelay(pdMS_TO_TICKS(10));
+
+        // write to DAC, ie common electrode
+        ESP_LOGI(TAG, "Writing to DAC: %" PRIu16 " %f", dacValue, 3.3 * (((float)dacValue) / 4095.0));
+        dac.write(dacValue);
+        dacValue += 1023;
+        if (dacValue >= (1 << 12))  // 12 bits
+        {
+            dacValue = 0;
+        }
+
         // write to channel-2
-        ESP_LOGI(TAG, "Writing to channel-2");
+        ESP_LOGI(TAG, "Writing to channel-2: %s", writeVal ? "HIGH" : "LOW");
         if ((mux.select(2) == ESP_OK) && (mux.configureWrite() == ESP_OK) && (mux.enable() == ESP_OK))
         {
             mux.write(writeVal);
@@ -53,14 +67,6 @@ extern "C" void app_main(void)
             mux.releaseWrite();
         }
         vTaskDelay(pdMS_TO_TICKS(10));
-
-        // write to DAC, ie common electrode
-        // dac.write(dacValue);
-        // dacValue += 100;
-        // if (dacValue >= (1 << 12))  // 12 bits
-        // {
-        //     dacValue = 0;
-        // }
 
         ESP_LOGI(TAG, "--------------------------------------------------");
         vTaskDelay(pdMS_TO_TICKS(3000));
