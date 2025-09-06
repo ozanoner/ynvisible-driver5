@@ -24,16 +24,16 @@ class CD74HC4067
         gpio_num_t enable;
     };
 
-    CD74HC4067() : m_initialised(false) { }
+    CD74HC4067() : m_initialised(false), m_adcHandle(nullptr) { }
 
     esp_err_t init(const Config& config);  // Configure pins
     esp_err_t select(uint8_t channel);     // select a channel by using Select pins
     esp_err_t enable();                    // enable a channel by taking Enable low
     esp_err_t disable();                   // high-z, default
 
-    esp_err_t configureRead();  // prep analog read
-    uint16_t  read();           // analog read
-    esp_err_t releaseRead();    // release resources
+    esp_err_t configureRead();        // prep analog read
+    esp_err_t read(uint16_t& value);  // analog read
+    esp_err_t releaseRead();          // release resources
 
     esp_err_t configureWrite();  // prep digital write
     esp_err_t write(bool high);  // digital write

@@ -8,6 +8,8 @@
 #include "freertos/task.h"
 #include "mcp4725.hpp"
 
+#define DAC_MAX_VALUE (1ull << 12)  // 12 bits
+
 static const char* TAG = "test1";
 
 extern "C" void app_main(void)
@@ -40,18 +42,21 @@ extern "C" void app_main(void)
         ESP_LOGI(TAG, "Reading from channel-1");
         if ((mux.select(1) == ESP_OK) && (mux.configureRead() == ESP_OK) && (mux.enable() == ESP_OK))
         {
-            uint16_t val = mux.read();
+            uint16_t val;
+            if (mux.read(val) == ESP_OK)
+            {
+                ESP_LOGI(TAG, "Channel-1 ADC value: %" PRIu16, val);
+            }
             mux.disable();
             mux.releaseRead();
-            ESP_LOGI(TAG, "Channel-1 ADC value: %" PRIu16, val);
         }
         vTaskDelay(pdMS_TO_TICKS(10));
 
         // write to DAC, ie common electrode
-        ESP_LOGI(TAG, "Writing to DAC: %" PRIu16 " %f", dacValue, 3.3 * (((float)dacValue) / 4095.0));
+        ESP_LOGI(TAG, "Writing to DAC: %" PRIu16 " %f", dacValue, 3.3 * (((float)dacValue) / DAC_MAX_VALUE));
         dac.write(dacValue);
         dacValue += 1023;
-        if (dacValue >= (1 << 12))  // 12 bits
+        if (dacValue >= DAC_MAX_VALUE)
         {
             dacValue = 0;
         }

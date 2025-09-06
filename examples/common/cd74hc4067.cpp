@@ -114,7 +114,7 @@ esp_err_t CD74HC4067::configureRead()
     return ESP_OK;
 }
 
-uint16_t CD74HC4067::read()
+esp_err_t CD74HC4067::read(uint16_t& value)
 {
     assert(m_initialised);
     assert(m_adcHandle != nullptr);
@@ -123,7 +123,8 @@ uint16_t CD74HC4067::read()
     esp_err_t err = adc_oneshot_read(m_adcHandle, m_adcChannel, &val);
     APP_RETURN_ON_ERROR(err, TAG, "Failed to read ADC channel");
 
-    return (uint16_t)val;
+    value = (uint16_t)val;
+    return ESP_OK;
 }
 
 esp_err_t CD74HC4067::releaseRead()
