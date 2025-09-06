@@ -1,11 +1,13 @@
 #include "app_gui.hpp"
 #include "bsp/esp-bsp.h"
 #include "esp_log.h"
+#include "evalkit_anims.hpp"
 
 namespace
 {
-app::Gui& m_gui = app::Gui::getInstance();
-}
+app::Gui&                m_gui   = app::Gui::getInstance();
+ynv::anim::EvalkitAnims& m_anims = ynv::anim::EvalkitAnims::getInstance();
+}  // namespace
 
 extern "C" void app_main(void)
 {
