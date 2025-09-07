@@ -3,18 +3,13 @@
 #include <array>
 #include <cassert>
 #include <cinttypes>
+#include <memory>
 #include <vector>
 
 #include "app_config.hpp"
-#include "ecd_drive_base.hpp"
-
-#define ACTIVE_DRIVING 1
-
-#if ACTIVE_DRIVING
 #include "ecd_drive_active.hpp"
-#else
+#include "ecd_drive_base.hpp"
 #include "ecd_drive_passive.hpp"
-#endif
 
 namespace ynv
 {
@@ -40,11 +35,7 @@ class ECD : public ECDBase
 {
    public:
     ECD(const std::array<int, SEGMENT_COUNT>* pins, const ynv::app::AppConfig_t* appConfig)
-        : m_pins(pins),
-          m_states({}),
-          m_nextStates({}),
-          m_driver(&m_config, pins, static_cast<ynv::driver::HALBase*>(appConfig->hal)),
-          m_appConfig(appConfig)
+        : m_pins(pins), m_states({}), m_nextStates({}), m_driver(nullptr), m_appConfig(appConfig)
     {
         assert(m_appConfig != nullptr);
     }
@@ -56,6 +47,18 @@ class ECD : public ECDBase
         m_config.maxAnalogValue = (1 << m_appConfig->analogResolution) - 1;  // Set max analog value based on resolution
         initConfig();  // Initialize the ECD with default configuration
         validateConfig();
+
+        if (m_appConfig->activeDriving)
+        {
+            m_driver = std::make_unique<ECDDriveActive<SEGMENT_COUNT>>(  // Create the driving algorithm instance
+                &m_config, m_pins, static_cast<ynv::driver::HALBase*>(m_appConfig->hal));
+        }
+        else
+        {
+            m_driver = std::make_unique<ECDDrivePassive<SEGMENT_COUNT>>(  // Create the driving algorithm instance
+                &m_config, m_pins, static_cast<ynv::driver::HALBase*>(m_appConfig->hal));
+        }
+        assert(m_driver != nullptr);
     }
 
     void reset() override
@@ -86,7 +89,8 @@ class ECD : public ECDBase
     // NOTE: The total execution time may exceed one cycle of the animation.
     void update() override
     {
-        m_driver.drive(m_states, m_nextStates);  // Drive the segments based on current and next states
+        assert(m_driver != nullptr);
+        m_driver->drive(m_states, m_nextStates);  // Drive the segments based on current and next states
     }
 
     void printConfig() const override
@@ -99,12 +103,9 @@ class ECD : public ECDBase
     std::array<bool, SEGMENT_COUNT>       m_states;      // Array to hold segment states (bleach=false or color=true)
     std::array<bool, SEGMENT_COUNT>       m_nextStates;  // Array to hold next states for segments
     ECDConfig_t                           m_config;      // Configuration for the ECD
-#if ACTIVE_DRIVING
-    ECDDriveActive<SEGMENT_COUNT> m_driver;  // Active driving algorithm
-#else
-    ECDDrivePassive<SEGMENT_COUNT> m_driver;  // Passive driving algorithm
-#endif
-    const ynv::app::AppConfig_t* m_appConfig;
+
+    std::unique_ptr<ECDDriveBase<SEGMENT_COUNT>> m_driver;  // Driving algorithm for the ECD
+    const ynv::app::AppConfig_t*                 m_appConfig;
 
     virtual void initConfig() = 0;  // Initialize the ECD with default configuration
 
