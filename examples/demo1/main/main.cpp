@@ -6,7 +6,7 @@
 
 namespace
 {
-app::Gui&                m_gui   = app::Gui::getInstance();
+app::GUI&                m_gui   = app::GUI::getInstance();
 ynv::anim::EvalkitAnims& m_anims = ynv::anim::EvalkitAnims::getInstance();
 }  // namespace
 
