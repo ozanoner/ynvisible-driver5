@@ -1,5 +1,6 @@
 #pragma once
 
+#include "app_config.hpp"
 #include "esp_err.h"
 
 namespace ynv
@@ -9,14 +10,13 @@ namespace driver
 class HALBase
 {
    public:
-    HALBase();
-    ~HALBase();
+    virtual esp_err_t digitalWrite(int pin, bool high, int delay = 10, int common = 0) = 0;
+    virtual int       analogRead(int pin)                                              = 0;
 
-    virtual esp_err_t digitalWrite(int pin, bool high, int delay = 10, int comm = MAX_SEGMENT_VOLTAGE) = 0;
-    virtual int       analogRead(int pin)                                                              = 0;
+    static constexpr const char* TAG = "HAL";
 
-    static const int MAX_SEGMENT_VOLTAGE = 1400;  // Maximum voltage to apply on an ECD segment (mV)
-    static const int HIGH_PIN_VOLTAGE    = 3300;  // ESP32 pin HIGH value (mV)
+   protected:
+    ynv::app::AppConfig_t* m_appConfig;  // Pointer to application configuration
 };
 
 }  // namespace driver

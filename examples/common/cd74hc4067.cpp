@@ -12,7 +12,7 @@ namespace app
 namespace hal
 {
 
-esp_err_t CD74HC4067::init(const Config& config)
+esp_err_t CD74HC4067::init(const Config_t& config)
 {
     esp_err_t err = ESP_OK;
 
@@ -103,7 +103,7 @@ esp_err_t CD74HC4067::configureRead()
     err = adc_oneshot_new_unit(&init_config1, &m_adcHandle);
     APP_RETURN_ON_ERROR(err, TAG, "Failed to create ADC unit");
 
-    //-------------ADC1 Config---------------//
+    //-------------ADC1 Config_t---------------//
     adc_oneshot_chan_cfg_t config = {
         .atten    = ADC_ATTEN_DB_12,
         .bitwidth = ADC_BITWIDTH_12,

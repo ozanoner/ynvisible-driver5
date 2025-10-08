@@ -14,7 +14,7 @@ namespace hal
 class MCP4725
 {
    public:
-    struct Config
+    struct Config_t
     {
         i2c_master_bus_handle_t busHandle;   // if nullptr, it will be initialised
         uint8_t                 i2cPort;     // I2C port number
@@ -27,14 +27,14 @@ class MCP4725
     MCP4725() : m_config(), m_initialized(false), m_i2cBusHandle(nullptr), m_devHandle(nullptr) { }
     ~MCP4725();
 
-    esp_err_t init(const Config& config);
+    esp_err_t init(const Config_t& config);
 
     esp_err_t write(uint16_t value);
 
     static constexpr const char* TAG = "MCP4725";
 
    private:
-    Config                  m_config;
+    Config_t                m_config;
     bool                    m_initialized;
     i2c_master_bus_handle_t m_i2cBusHandle;
     i2c_master_dev_handle_t m_devHandle;

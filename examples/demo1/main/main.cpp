@@ -1,4 +1,5 @@
 #include "app_gui.hpp"
+#include "app_hal.hpp"
 #include "bsp/esp-bsp.h"
 #include "esp_log.h"
 #include "evalkit_anims.hpp"

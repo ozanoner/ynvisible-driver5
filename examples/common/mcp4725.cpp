@@ -20,7 +20,7 @@ MCP4725::~MCP4725()
     }
 }
 
-esp_err_t MCP4725::init(const Config& config)
+esp_err_t MCP4725::init(const Config_t& config)
 {
     esp_err_t err = ESP_OK;
 
