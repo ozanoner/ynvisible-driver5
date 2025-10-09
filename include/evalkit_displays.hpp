@@ -1,5 +1,5 @@
 /**
- * @file evalkit_displays.h
+ * @file evalkit_displays.hpp
  * @brief  Evaluation Kit display interface.
  * This header defines the EvalkitDisplays class, which manages different display types
  * available on the Ynvisible Evaluation Kit v5. It provides a unified interface for
