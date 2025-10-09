@@ -1,5 +1,5 @@
 /**
- * @file evalkit_anims.h
+ * @file evalkit_anims.hpp
  * @brief  Evaluation Kit animations interface.
  * This header defines the EvalkitAnims class, which manages different animations
  * available on the Ynvisible Evaluation Kit v5. It provides a unified interface for
