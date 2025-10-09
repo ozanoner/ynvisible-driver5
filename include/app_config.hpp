@@ -1,5 +1,5 @@
 /**
- * @file app_config.h
+ * @file app_config.hpp
  * @brief  Application configuration header
  * This header defines the application configuration structure used throughout the library.
  * @version 0.1
