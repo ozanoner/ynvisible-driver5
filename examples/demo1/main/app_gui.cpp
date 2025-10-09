@@ -11,7 +11,7 @@
 
 namespace app
 {
-esp_err_t Gui::init()
+esp_err_t GUI::init()
 {
     btnInfos.reserve(MAX_BTN_INFOS);
     /* Initialize display and LVGL */
@@ -26,7 +26,7 @@ esp_err_t Gui::init()
     return ESP_OK;
 }
 
-esp_err_t Gui::show()
+esp_err_t GUI::show()
 {
     const std::array<lv_dir_t, evalkit::DisplayInfo::DISP_CNT> dispDirs = {
         static_cast<lv_dir_t>(LV_DIR_BOTTOM | LV_DIR_RIGHT), static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
@@ -60,8 +60,8 @@ static void btnEventHandler(lv_event_t* e)
 
     if (code == LV_EVENT_VALUE_CHANGED)
     {
-        Gui::BtnInfo& btnInfo = *static_cast<Gui::BtnInfo*>(lv_event_get_user_data(e));
-        ESP_LOGI(Gui::TAG, "Button event (%s)", btnInfo.animBtnName);
+        GUI::BtnInfo& btnInfo = *static_cast<GUI::BtnInfo*>(lv_event_get_user_data(e));
+        ESP_LOGI(GUI::TAG, "Button event (%s)", btnInfo.animBtnName);
 
         btnInfo.checked = !btnInfo.checked;
         lv_label_set_text(btnInfo.statusLabel, btnInfo.checked ? "#00ff00 Playing#" : "#ff0000 Select#");
@@ -73,7 +73,7 @@ static void btnEventHandler(lv_event_t* e)
     }
 }
 
-esp_err_t Gui::addAnimationButtons(lv_obj_t* tv, evalkit::DisplayInfo::Ecd_e display)
+esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, evalkit::DisplayInfo::Ecd_e display)
 {
     // add a new tile for animation buttons
     lv_obj_t* tile1 = lv_tileview_add_tile(tv, 1, display, LV_DIR_LEFT);
@@ -93,7 +93,7 @@ esp_err_t Gui::addAnimationButtons(lv_obj_t* tv, evalkit::DisplayInfo::Ecd_e dis
     {
         btnInfos.emplace_back(BtnInfo {display, btnName, nullptr, false, label1});
 
-        lv_obj_t* btn = lv_list_add_btn(list1, NULL, btnName);
+        lv_obj_t* btn = lv_list_add_btn(list1, nullptr, btnName);
         lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
         lv_obj_add_event_cb(btn, btnEventHandler, LV_EVENT_VALUE_CHANGED, &btnInfos.back());
     }

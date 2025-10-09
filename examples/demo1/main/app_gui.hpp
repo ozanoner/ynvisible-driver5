@@ -11,21 +11,21 @@
 
 namespace app
 {
-class Gui
+class GUI
 {
    public:
     // Get the singleton instance
-    static Gui& getInstance()
+    static GUI& getInstance()
     {
-        static Gui instance;
+        static GUI instance;
         return instance;
     }
 
     // Delete copy constructor and assignment operator
-    Gui(const Gui&)            = delete;
-    Gui& operator=(const Gui&) = delete;
+    GUI(const GUI&)            = delete;
+    GUI& operator=(const GUI&) = delete;
 
-    ~Gui() = default;
+    ~GUI() = default;
 
     esp_err_t init();
 
@@ -38,11 +38,11 @@ class Gui
         lv_obj_t*                         statusLabel;
     };
 
-    static constexpr const char* TAG = "Gui";
+    static constexpr const char* TAG = "GUI";
 
    private:
     // Private constructor
-    Gui() = default;
+    GUI() = default;
 
     static inline const std::map<evalkit::DisplayInfo::Ecd_e, const lv_image_dsc_t*> DISP_FILE_MAP = {
         {evalkit::DisplayInfo::DISP431V2PV1, &disp431v2pv1}, {evalkit::DisplayInfo::DISP433V1PV1, &disp433v1pv1},

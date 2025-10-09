@@ -14,7 +14,7 @@ namespace hal
 class CD74HC4067
 {
    public:
-    struct Config
+    struct Config_t
     {
         gpio_num_t s0;
         gpio_num_t s1;
@@ -26,10 +26,10 @@ class CD74HC4067
 
     CD74HC4067() : m_initialised(false), m_adcHandle(nullptr) { }
 
-    esp_err_t init(const Config& config);  // Configure pins
-    esp_err_t select(uint8_t channel);     // select a channel by using Select pins
-    esp_err_t enable();                    // enable a channel by taking Enable low
-    esp_err_t disable();                   // high-z, default
+    esp_err_t init(const Config_t& config);  // Configure pins
+    esp_err_t select(uint8_t channel);       // select a channel by using Select pins
+    esp_err_t enable();                      // enable a channel by taking Enable low
+    esp_err_t disable();                     // high-z, default
 
     esp_err_t configureRead();        // prep analog read
     esp_err_t read(uint16_t& value);  // analog read
@@ -42,8 +42,8 @@ class CD74HC4067
     static constexpr const char* TAG = "CD74HC4067";
 
    private:
-    Config m_config;
-    bool   m_initialised;
+    Config_t m_config;
+    bool     m_initialised;
 
     adc_oneshot_unit_handle_t m_adcHandle;
     adc_unit_t                m_adcUnit;
