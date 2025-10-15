@@ -40,7 +40,7 @@ extern "C" void app_main(void)
     {
         // read from channel-1
         ESP_LOGI(TAG, "Reading from channel-1");
-        if ((mux.select(1) == ESP_OK) && (mux.configureRead() == ESP_OK) && (mux.enable() == ESP_OK))
+        if ((mux.select(1) == ESP_OK) && (mux.enable() == ESP_OK))
         {
             uint16_t val;
             if (mux.read(val) == ESP_OK)
@@ -48,7 +48,6 @@ extern "C" void app_main(void)
                 ESP_LOGI(TAG, "Channel-1 ADC value: %" PRIu16, val);
             }
             mux.disable();
-            mux.releaseRead();
         }
         vTaskDelay(pdMS_TO_TICKS(10));
 
@@ -63,13 +62,12 @@ extern "C" void app_main(void)
 
         // write to channel-2
         ESP_LOGI(TAG, "Writing to channel-2: %s", writeVal ? "HIGH" : "LOW");
-        if ((mux.select(2) == ESP_OK) && (mux.configureWrite() == ESP_OK) && (mux.enable() == ESP_OK))
+        if ((mux.select(2) == ESP_OK) && (mux.enable() == ESP_OK))
         {
             mux.write(writeVal);
             writeVal = !writeVal;
             vTaskDelay(pdMS_TO_TICKS(3000));
             mux.disable();
-            mux.releaseWrite();
         }
         vTaskDelay(pdMS_TO_TICKS(10));
 
