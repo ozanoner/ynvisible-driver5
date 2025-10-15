@@ -26,22 +26,22 @@
 #include "disp_test.hpp"
 #include "ecd.hpp"
 
-// Temporary pin definitions - will be updated later
-#define PIN_SEG_1 0
-#define PIN_SEG_2 1
-#define PIN_SEG_3 2
-#define PIN_SEG_4 3
-#define PIN_SEG_5 4
-#define PIN_SEG_6 5
-#define PIN_SEG_7 6
-#define PIN_SEG_8 7
-#define PIN_SEG_9 8
-#define PIN_SEG_10 9
-#define PIN_SEG_11 10
-#define PIN_SEG_12 11
-#define PIN_SEG_13 12
-#define PIN_SEG_14 13
-#define PIN_SEG_15 14
+// pin-0 is for common
+#define PIN_SEG_1 1
+#define PIN_SEG_2 2
+#define PIN_SEG_3 3
+#define PIN_SEG_4 4
+#define PIN_SEG_5 5
+#define PIN_SEG_6 6
+#define PIN_SEG_7 7
+#define PIN_SEG_8 8
+#define PIN_SEG_9 9
+#define PIN_SEG_10 10
+#define PIN_SEG_11 11
+#define PIN_SEG_12 12
+#define PIN_SEG_13 13
+#define PIN_SEG_14 14
+#define PIN_SEG_15 15
 
 namespace ynv
 {

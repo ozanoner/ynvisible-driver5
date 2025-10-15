@@ -47,7 +47,7 @@ extern "C" void app_main(void)
 
     // initialise animations
     anims.init(&appConfig);
-    anims.select(ynv::anim::EvalkitAnims::Anim_t::ANIM_TEST);
+    anims.select(ynv::anim::EvalkitAnims::Anim_t::ANIM_TOGGLE);
 
     auto& currentAnim = anims.getCurrentAnim();
     currentAnim.start();
