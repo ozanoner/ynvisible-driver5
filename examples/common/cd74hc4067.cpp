@@ -94,14 +94,27 @@ esp_err_t CD74HC4067::disable()
 esp_err_t CD74HC4067::configureRead()
 {
     assert(m_initialised);
-
     esp_err_t err = ESP_OK;
+
+    if (m_signalIO == SignalIO_t::INPUT)
+    {
+        // already configured for input
+        return ESP_OK;
+    }
+    else if (m_signalIO == SignalIO_t::OUTPUT)
+    {
+        // release output resources
+        err = releaseWrite();
+        APP_RETURN_ON_ERROR(err, TAG, "Failed to release GPIO resources");
+    }
 
     adc_oneshot_unit_init_cfg_t init_config1 = {
         .unit_id = m_adcUnit,
     };
     err = adc_oneshot_new_unit(&init_config1, &m_adcHandle);
     APP_RETURN_ON_ERROR(err, TAG, "Failed to create ADC unit");
+
+    m_signalIO = SignalIO_t::INPUT;
 
     //-------------ADC1 Config_t---------------//
     adc_oneshot_chan_cfg_t config = {
@@ -117,10 +130,13 @@ esp_err_t CD74HC4067::configureRead()
 esp_err_t CD74HC4067::read(uint16_t& value)
 {
     assert(m_initialised);
-    assert(m_adcHandle != nullptr);
 
-    int       val;
-    esp_err_t err = adc_oneshot_read(m_adcHandle, m_adcChannel, &val);
+    int       val = 0;
+    esp_err_t err = ESP_OK;
+
+    APP_RETURN_ON_ERROR(configureRead(), TAG, "Failed to configure for reading");
+
+    err = adc_oneshot_read(m_adcHandle, m_adcChannel, &val);
     APP_RETURN_ON_ERROR(err, TAG, "Failed to read ADC channel");
 
     value = (uint16_t)val;
@@ -141,7 +157,18 @@ esp_err_t CD74HC4067::releaseRead()
 esp_err_t CD74HC4067::configureWrite()
 {
     assert(m_initialised);
-    assert(m_adcHandle == nullptr);
+
+    if (m_signalIO == SignalIO_t::OUTPUT)
+    {
+        // already configured for output
+        return ESP_OK;
+    }
+    else if (m_signalIO == SignalIO_t::INPUT)
+    {
+        // release input resources
+        esp_err_t err = releaseRead();
+        APP_RETURN_ON_ERROR(err, TAG, "Failed to release ADC resources");
+    }
 
     gpio_config_t ioConf = {};
     ioConf.pin_bit_mask  = (1ull << (int)m_config.signal);
@@ -153,14 +180,19 @@ esp_err_t CD74HC4067::configureWrite()
     esp_err_t err = gpio_config(&ioConf);
     APP_RETURN_ON_ERROR(err, TAG, "Failed to configure Signal pin for writing");
 
+    m_signalIO = SignalIO_t::OUTPUT;
+
     return err;
 }
 
 esp_err_t CD74HC4067::write(bool high)
 {
     assert(m_initialised);
+    esp_err_t err = ESP_OK;
 
-    esp_err_t err = gpio_set_level(m_config.signal, high);
+    APP_RETURN_ON_ERROR(configureWrite(), TAG, "Failed to configure for writing");
+
+    err = gpio_set_level(m_config.signal, high);
     APP_RETURN_ON_ERROR(err, TAG, "Failed to set Signal pin");
 
     return err;

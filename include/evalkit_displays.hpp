@@ -23,24 +23,25 @@
 #include "disp_decimal_number.hpp"
 #include "disp_dot_number.hpp"
 #include "disp_single_segment.hpp"
+#include "disp_test.hpp"
 #include "ecd.hpp"
 
-// Temporary pin definitions - will be updated later
-#define PIN_SEG_1 0
-#define PIN_SEG_2 1
-#define PIN_SEG_3 2
-#define PIN_SEG_4 3
-#define PIN_SEG_5 4
-#define PIN_SEG_6 5
-#define PIN_SEG_7 6
-#define PIN_SEG_8 7
-#define PIN_SEG_9 8
-#define PIN_SEG_10 9
-#define PIN_SEG_11 10
-#define PIN_SEG_12 11
-#define PIN_SEG_13 12
-#define PIN_SEG_14 13
-#define PIN_SEG_15 14
+// pin-0 is for common
+#define PIN_SEG_1 1
+#define PIN_SEG_2 2
+#define PIN_SEG_3 3
+#define PIN_SEG_4 4
+#define PIN_SEG_5 5
+#define PIN_SEG_6 6
+#define PIN_SEG_7 7
+#define PIN_SEG_8 8
+#define PIN_SEG_9 9
+#define PIN_SEG_10 10
+#define PIN_SEG_11 11
+#define PIN_SEG_12 12
+#define PIN_SEG_13 13
+#define PIN_SEG_14 14
+#define PIN_SEG_15 15
 
 namespace ynv
 {
@@ -63,6 +64,7 @@ class EvalkitDisplays
         EVALKIT_DISP_DOT_NUMBER_DISPLAY,          // DISP434V1PV1
         EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY,      // DISP433V1PV1
         EVALKIT_DISP_SIGNED_NUMBER_DISPLAY,       // DISP444V1PV2
+        EVALKIT_DISP_TEST,                        // generic
         EVALKIT_DISP_CNT
     };
 
@@ -98,6 +100,9 @@ class EvalkitDisplays
                 break;
             case EVALKIT_DISP_SIGNED_NUMBER_DISPLAY:
                 m_displayPtr = std::make_shared<DispSignedNumber>(&signedNumberDisplayPins, m_appConfig);
+                break;
+            case EVALKIT_DISP_TEST:
+                m_displayPtr = std::make_shared<DispTest>(&testDisplayPins, m_appConfig);
                 break;
             default:
                 break;
@@ -136,6 +141,9 @@ class EvalkitDisplays
     const std::array<int, 15> signedNumberDisplayPins {PIN_SEG_4,  PIN_SEG_2,  PIN_SEG_1, PIN_SEG_8,  PIN_SEG_7,
                                                        PIN_SEG_6,  PIN_SEG_3,  PIN_SEG_5, PIN_SEG_14, PIN_SEG_13,
                                                        PIN_SEG_11, PIN_SEG_10, PIN_SEG_9, PIN_SEG_15, PIN_SEG_12};
+    const std::array<int, 15> testDisplayPins {PIN_SEG_1,  PIN_SEG_2,  PIN_SEG_3,  PIN_SEG_4,  PIN_SEG_5,
+                                               PIN_SEG_6,  PIN_SEG_7,  PIN_SEG_8,  PIN_SEG_9,  PIN_SEG_10,
+                                               PIN_SEG_11, PIN_SEG_12, PIN_SEG_13, PIN_SEG_14, PIN_SEG_15};
 
     std::shared_ptr<ECDBase>     m_displayPtr;  // Pointer to the current display
     const ynv::app::AppConfig_t* m_appConfig;

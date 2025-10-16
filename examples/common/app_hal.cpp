@@ -66,9 +66,6 @@ esp_err_t HAL::digitalWrite(int pin, bool high, int delay, int common)
     err = m_mux.select(pin);
     APP_RETURN_ON_ERROR(err, TAG, "Failed to select mux channel");
 
-    err = m_mux.configureWrite();
-    APP_RETURN_ON_ERROR(err, TAG, "Failed to configure mux for write");
-
     err = m_mux.enable();
     APP_RETURN_ON_ERROR(err, TAG, "Failed to enable mux");
 
@@ -84,7 +81,6 @@ esp_err_t HAL::digitalWrite(int pin, bool high, int delay, int common)
     }
 
     (void)m_mux.disable();
-    (void)m_mux.releaseWrite();
 
     return err;
 }
@@ -97,7 +93,7 @@ int HAL::analogRead(int pin)
     ESP_LOGI(TAG, "analogRead: pin=%d", pin);
     assert(pin > 0 && pin < 16);  // CD74HC4067 has 16 channels (0-15), pin-0 won't be used
 
-    if ((m_mux.select(pin) == ESP_OK) && (m_mux.configureRead() == ESP_OK) && (m_mux.enable() == ESP_OK))
+    if ((m_mux.select(pin) == ESP_OK) && (m_mux.enable() == ESP_OK))
     {
         err = m_mux.read(val);
         if (err != ESP_OK)
@@ -107,7 +103,6 @@ int HAL::analogRead(int pin)
         }
 
         (void)m_mux.disable();
-        (void)m_mux.releaseRead();
     }
     else
     {

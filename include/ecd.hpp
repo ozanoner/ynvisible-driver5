@@ -98,6 +98,11 @@ class ECD : public ECDBase
         m_config.print();  // Print the configuration of the ECD
     }
 
+    int getSegmentCount() const
+    {
+        return SEGMENT_COUNT;  // Return the number of segments
+    }
+
    protected:
     const std::array<int, SEGMENT_COUNT>* m_pins;        // Array to hold segment pin numbers
     std::array<bool, SEGMENT_COUNT>       m_states;      // Array to hold segment states (bleach=false or color=true)

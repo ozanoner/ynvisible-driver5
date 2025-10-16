@@ -14,23 +14,23 @@ struct ECDConfig_t
 {
     static constexpr const char* TAG = "ECDConfig";
 
-    int maxAnalogValue;  // Maximum analog value for the ECD
+    int maxAnalogValue;  // Maximum analog value based on resolution
 
     // Color & Bleach Configs
-    int coloringVoltage;  // V - Color Pulse Voltage mapped to ADC_DAC_MAX_LSB
+    int coloringVoltage;  // Analog value
     int coloringTime;     // ms - Color time
 
-    int bleachingVoltage;  // V - Bleach Pulse Voltage mapped to ADC_DAC_MAX_LSB
+    int bleachingVoltage;  // Analog value
     int bleachingTime;     // ms - Bleach time
 
     // Refresh Configs
-    int refreshColoringVoltage;  // V - Refresh Coloring Pulses Voltage mapped to ADC_DAC_MAX_LSB
+    int refreshColoringVoltage;  // Analog value
     int refreshColorPulseTime;   // ms - Delay between each Refresh Pulse
 
     int refreshColorLimitHVoltage;
     int refreshColorLimitLVoltage;
 
-    int refreshBleachingVoltage;  // V - Refresh Bleaching Pulses Voltage mapped to ADC_DAC_MAX_LSB
+    int refreshBleachingVoltage;  // Analog value
     int refreshBleachPulseTime;
 
     int refreshBleachLimitHVoltage;

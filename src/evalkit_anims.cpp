@@ -27,6 +27,7 @@
 #include "anim_13.hpp"
 #include "anim_14.hpp"
 #include "anim_15.hpp"
+#include "anim_test.hpp"
 
 namespace ynv
 {
@@ -89,6 +90,11 @@ void EvalkitAnims::init(const ynv::app::AppConfig_t* appConfig)
                 std::static_pointer_cast<ynv::ecd::DispSignedNumber>(display));
             m_anims[ANIM_15SEGSIGNED_NEGATIVE_COUNTER_DOWN] = std::make_unique<Anim15SegSignedNegativeCounterDown>(
                 std::static_pointer_cast<ynv::ecd::DispSignedNumber>(display));
+            break;
+
+        case ECDEvalkitDisplay_t::EVALKIT_DISP_TEST:
+            m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
+            m_anims[ANIM_TEST]   = std::make_unique<AnimTest>(std::static_pointer_cast<ynv::ecd::DispTest>(display));
             break;
 
         default:

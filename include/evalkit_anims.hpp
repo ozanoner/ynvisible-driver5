@@ -48,6 +48,7 @@ class EvalkitAnims
         ANIM_3SEGBAR_COUNTER_UP,
         ANIM_3SEGBAR_COUNTER_DOWN,
         ANIM_3SEGBAR_POS,
+        ANIM_TEST,
         ANIM_CNT
     };
 
@@ -120,6 +121,7 @@ class EvalkitAnims
         {ANIM_3SEGBAR_COUNTER_UP, "Anim_t::ANIM_3SEGBAR_COUNTER_UP"},
         {ANIM_3SEGBAR_COUNTER_DOWN, "Anim_t::ANIM_3SEGBAR_COUNTER_DOWN"},
         {ANIM_3SEGBAR_POS, "Anim_t::ANIM_3SEGBAR_POS"},
+        {ANIM_TEST, "Anim_t::ANIM_TEST"},
         {ANIM_CNT, "Anim_t::ANIM_NONE"}};
 
     const ynv::app::AppConfig_t* m_appConfig = nullptr;

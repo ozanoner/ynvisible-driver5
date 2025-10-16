@@ -31,23 +31,31 @@ class CD74HC4067
     esp_err_t enable();                      // enable a channel by taking Enable low
     esp_err_t disable();                     // high-z, default
 
-    esp_err_t configureRead();        // prep analog read
     esp_err_t read(uint16_t& value);  // analog read
-    esp_err_t releaseRead();          // release resources
-
-    esp_err_t configureWrite();  // prep digital write
-    esp_err_t write(bool high);  // digital write
-    esp_err_t releaseWrite();    // release resources
+    esp_err_t write(bool high);       // digital write
 
     static constexpr const char* TAG = "CD74HC4067";
 
    private:
-    Config_t m_config;
-    bool     m_initialised;
+    enum class SignalIO_t
+    {
+        NONE,
+        OUTPUT,
+        INPUT
+    };
+
+    Config_t   m_config;
+    bool       m_initialised;
+    SignalIO_t m_signalIO = SignalIO_t::NONE;
 
     adc_oneshot_unit_handle_t m_adcHandle;
     adc_unit_t                m_adcUnit;
     adc_channel_t             m_adcChannel;
+
+    esp_err_t configureRead();   // prep analog read
+    esp_err_t configureWrite();  // prep digital write
+    esp_err_t releaseRead();     // release resources
+    esp_err_t releaseWrite();    // release resources
 };
 
 }  // namespace hal
