@@ -80,6 +80,11 @@ class ECDDriveBase
     const ECDConfig_t*                    m_config;  // Configuration for the ECD
     const std::array<int, SEGMENT_COUNT>* m_pins;    // Pin numbers for the segments
     ynv::driver::HALBase*                 m_hal;     // Underlying hardware to control pins
+
+    std::vector<int> m_bleachRefreshPins(SEGMENT_COUNT);
+    std::vector<int> m_bleachPins(SEGMENT_COUNT);
+    std::vector<int> m_colorRefreshPins(SEGMENT_COUNT);
+    std::vector<int> m_colorPins(SEGMENT_COUNT);
 };
 }  // namespace ecd
 }  // namespace ynv

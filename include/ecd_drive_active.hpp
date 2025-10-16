@@ -25,16 +25,12 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
     void drive(std::array<bool, SEGMENT_COUNT>&       currentStates,
                const std::array<bool, SEGMENT_COUNT>& nextStates) override
     {
-        static std::vector<int> bleachRefreshPins(SEGMENT_COUNT);
-        static std::vector<int> bleachPins(SEGMENT_COUNT);
-        static std::vector<int> colorRefreshPins(SEGMENT_COUNT);
-        static std::vector<int> colorPins(SEGMENT_COUNT);
-        static std::vector<int> tmp(SEGMENT_COUNT);
+        std::vector<int> tmp(SEGMENT_COUNT);
 
-        bleachPins.clear();
-        colorPins.clear();
-        bleachRefreshPins.clear();
-        colorRefreshPins.clear();
+        m_bleachPins.clear();
+        m_colorPins.clear();
+        m_bleachRefreshPins.clear();
+        m_colorRefreshPins.clear();
 
         int analogVal = 0;
 
@@ -46,68 +42,68 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
 
                 if (currentStates[i] && (analogVal < m_config->refreshColorLimitLVoltage))
                 {
-                    colorPins.push_back((*m_pins)[i]);
+                    m_colorRefreshPins.push_back((*m_pins)[i]);
                 }
                 else if (!currentStates[i] && (analogVal > m_config->refreshBleachLimitHVoltage))
                 {
-                    bleachPins.push_back((*m_pins)[i]);
+                    m_bleachRefreshPins.push_back((*m_pins)[i]);
                 }
             }
             else
             {  // change state
                 if (nextStates[i])
                 {
-                    colorPins.push_back((*m_pins)[i]);
+                    m_colorPins.push_back((*m_pins)[i]);
                 }
                 else
                 {
-                    bleachPins.push_back((*m_pins)[i]);
+                    m_bleachPins.push_back((*m_pins)[i]);
                 }
                 currentStates[i] = nextStates[i];  // Update the current state
             }
         }
 
-        if (colorPins.size() > 0)
+        if (m_colorPins.size() > 0)
         {
-            for (const auto& pin : colorPins)
+            for (const auto& pin : m_colorPins)
             {
                 m_hal->digitalWrite(pin, true, m_config->coloringTime, m_config->coloringVoltage);
             }
         }
 
-        if (bleachPins.size() > 0)
+        if (m_bleachPins.size() > 0)
         {
-            for (const auto& pin : bleachPins)
+            for (const auto& pin : m_bleachPins)
             {
                 m_hal->digitalWrite(pin, false, m_config->bleachingTime, m_config->bleachingVoltage);
             }
         }
 
-        if (colorRefreshPins.size() > 0)
+        if (m_colorRefreshPins.size() > 0)
         {
             bool done {false};
             int  retries {0};
 
             while (!done && retries < MAX_REFRESH_RETRIES)
             {
-                for (const auto& pin : colorRefreshPins)
+                for (const auto& pin : m_colorRefreshPins)
                 {
                     m_hal->digitalWrite(pin, true, m_config->refreshColorPulseTime, m_config->refreshColoringVoltage);
                 }
 
-                tmp = colorRefreshPins;
+                tmp = m_colorRefreshPins;
 
-                colorRefreshPins.clear();
+                m_colorRefreshPins.clear();
                 for (const auto& pin : tmp)
                 {
                     analogVal = m_hal->analogRead(pin);
                     if (analogVal < m_config->refreshColorLimitHVoltage)
                     {
-                        colorRefreshPins.push_back(pin);
+                        m_colorRefreshPins.push_back(pin);
                     }
                 }
 
-                done = (colorRefreshPins.size() == 0);
+                done = (m_colorRefreshPins.size() == 0);
                 ++retries;
             }
 
@@ -117,32 +113,32 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
             }
         }
 
-        if (bleachRefreshPins.size() > 0)
+        if (m_bleachRefreshPins.size() > 0)
         {
             bool done {false};
             int  retries {0};
 
             while (!done && retries < MAX_REFRESH_RETRIES)
             {
-                for (const auto& pin : bleachRefreshPins)
+                for (const auto& pin : m_bleachRefreshPins)
                 {
                     m_hal->digitalWrite(pin, false, m_config->refreshBleachPulseTime,
                                         m_config->refreshBleachingVoltage);
                 }
 
-                tmp = bleachRefreshPins;
+                tmp = m_bleachRefreshPins;
 
-                bleachRefreshPins.clear();
+                m_bleachRefreshPins.clear();
                 for (const auto& pin : tmp)
                 {
                     analogVal = m_hal->analogRead(pin);
                     if (analogVal > m_config->refreshBleachLimitLVoltage)
                     {
-                        bleachRefreshPins.push_back(pin);
+                        m_bleachRefreshPins.push_back(pin);
                     }
                 }
 
-                done = (bleachRefreshPins.size() == 0);
+                done = (m_bleachRefreshPins.size() == 0);
                 ++retries;
             }
 
