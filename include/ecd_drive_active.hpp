@@ -1,9 +1,11 @@
 #pragma once
 
+#include <algorithm>
 #include <array>
 #include <vector>
 
 #include "ecd_drive_base.hpp"
+#include "esp_log.h"
 
 namespace ynv
 {
@@ -12,9 +14,16 @@ namespace ecd
 template <int SEGMENT_COUNT>
 class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
 {
+   private:
+    std::vector<int> m_colorPins;          // Pins to be colored
+    std::vector<int> m_bleachPins;         // Pins to be bleached
+    std::vector<int> m_colorRefreshPins;   // Pins to be refreshed for coloring
+    std::vector<int> m_bleachRefreshPins;  // Pins to be refreshed for bleaching
+
    public:
     ~ECDDriveActive() = default;
 
+    using ECDDriveBase<SEGMENT_COUNT>::TAG;
     using ECDDriveBase<SEGMENT_COUNT>::ECDDriveBase;  // Inherit constructors
     using ECDDriveBase<SEGMENT_COUNT>::m_pins;
     using ECDDriveBase<SEGMENT_COUNT>::m_config;
@@ -25,26 +34,27 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
     void drive(std::array<bool, SEGMENT_COUNT>&       currentStates,
                const std::array<bool, SEGMENT_COUNT>& nextStates) override
     {
-        std::vector<int> tmp(SEGMENT_COUNT);
+        std::vector<int> tmp;
 
-        m_bleachPins.clear();
         m_colorPins.clear();
-        m_bleachRefreshPins.clear();
+        m_bleachPins.clear();
         m_colorRefreshPins.clear();
+        m_bleachRefreshPins.clear();
 
-        int analogVal = 0;
+        m_colorPins.reserve(SEGMENT_COUNT);
+        m_bleachPins.reserve(SEGMENT_COUNT);
+        m_colorRefreshPins.reserve(SEGMENT_COUNT);
+        m_bleachRefreshPins.reserve(SEGMENT_COUNT);
 
         for (int i = 0; i < SEGMENT_COUNT; ++i)
         {
             if (currentStates[i] == nextStates[i])
             {  // refresh
-                analogVal = m_hal->analogRead((*m_pins)[i]);
-
-                if (currentStates[i] && (analogVal < m_config->refreshColorLimitLVoltage))
+                if (currentStates[i])
                 {
                     m_colorRefreshPins.push_back((*m_pins)[i]);
                 }
-                else if (!currentStates[i] && (analogVal > m_config->refreshBleachLimitHVoltage))
+                else
                 {
                     m_bleachRefreshPins.push_back((*m_pins)[i]);
                 }
@@ -63,91 +73,68 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
             }
         }
 
-        if (m_colorPins.size() > 0)
+        // change state
+        for (const auto& pin : m_colorPins)
         {
-            for (const auto& pin : m_colorPins)
-            {
-                m_hal->digitalWrite(pin, true, m_config->coloringTime, m_config->coloringVoltage);
-            }
+            m_hal->digitalWrite(pin, true, m_config->coloringTime,
+                                (m_config->maxAnalogValue - m_config->coloringVoltage));
+        }
+        for (const auto& pin : m_bleachPins)
+        {
+            m_hal->digitalWrite(pin, false, m_config->bleachingTime, m_config->bleachingVoltage);
         }
 
-        if (m_bleachPins.size() > 0)
+        // refresh
+        bool done {m_colorRefreshPins.size() == 0 && m_bleachRefreshPins.size() == 0};
+        int  retries {0};
+        while (!done && retries < MAX_REFRESH_RETRIES)
         {
-            for (const auto& pin : m_bleachPins)
-            {
-                m_hal->digitalWrite(pin, false, m_config->bleachingTime, m_config->bleachingVoltage);
-            }
-        }
+            // now check the segments which are still not refreshed
+            m_colorRefreshPins.erase(std::remove_if(m_colorRefreshPins.begin(), m_colorRefreshPins.end(),
+                                                    [&](int pin)
+                                                    {
+                                                        int analogVal = m_hal->analogRead(pin);
+                                                        return analogVal >= m_config->refreshColorLimitHVoltage;
+                                                    }),
+                                     m_colorRefreshPins.end());
 
-        if (m_colorRefreshPins.size() > 0)
-        {
-            bool done {false};
-            int  retries {0};
+            m_bleachRefreshPins.erase(std::remove_if(m_bleachRefreshPins.begin(), m_bleachRefreshPins.end(),
+                                                     [&](int pin)
+                                                     {
+                                                         int analogVal = m_hal->analogRead(pin);
+                                                         return analogVal <= m_config->refreshBleachLimitLVoltage;
+                                                     }),
+                                      m_bleachRefreshPins.end());
 
-            while (!done && retries < MAX_REFRESH_RETRIES)
-            {
-                for (const auto& pin : m_colorRefreshPins)
-                {
-                    m_hal->digitalWrite(pin, true, m_config->refreshColorPulseTime, m_config->refreshColoringVoltage);
-                }
-
-                tmp = m_colorRefreshPins;
-
-                m_colorRefreshPins.clear();
-                for (const auto& pin : tmp)
-                {
-                    analogVal = m_hal->analogRead(pin);
-                    if (analogVal < m_config->refreshColorLimitHVoltage)
-                    {
-                        m_colorRefreshPins.push_back(pin);
-                    }
-                }
-
-                done = (m_colorRefreshPins.size() == 0);
-                ++retries;
-            }
+            retries++;
+            done = (m_colorRefreshPins.size() == 0 && m_bleachRefreshPins.size() == 0);
 
             if (!done)
             {
-                // Serial.println("WARNING: Color refresh failed");
-            }
-        }
+                ESP_LOGI(TAG, "Refresh attempt %d", retries);
 
-        if (m_bleachRefreshPins.size() > 0)
-        {
-            bool done {false};
-            int  retries {0};
+                // lets refresh the segments first
+                for (const auto& pin : m_colorRefreshPins)
+                {
+                    m_hal->digitalWrite(pin, true, m_config->refreshColorPulseTime,
+                                        (m_config->maxAnalogValue - m_config->refreshColoringVoltage));
+                }
 
-            while (!done && retries < MAX_REFRESH_RETRIES)
-            {
                 for (const auto& pin : m_bleachRefreshPins)
                 {
                     m_hal->digitalWrite(pin, false, m_config->refreshBleachPulseTime,
                                         m_config->refreshBleachingVoltage);
                 }
-
-                tmp = m_bleachRefreshPins;
-
-                m_bleachRefreshPins.clear();
-                for (const auto& pin : tmp)
-                {
-                    analogVal = m_hal->analogRead(pin);
-                    if (analogVal > m_config->refreshBleachLimitLVoltage)
-                    {
-                        m_bleachRefreshPins.push_back(pin);
-                    }
-                }
-
-                done = (m_bleachRefreshPins.size() == 0);
-                ++retries;
             }
 
-            if (!done)
-            {
-                // Serial.println("WARNING: Bleach refresh failed");
-            }
+        }  // refresh while
+
+        if (!done)
+        {
+            ESP_LOGW(TAG, "Refresh operation did not complete within %d retries", MAX_REFRESH_RETRIES);
         }
-    }
+
+    }  // drive
 };
 }  // namespace ecd
 }  // namespace ynv
