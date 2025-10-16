@@ -1,0 +1,9 @@
+menu "Application"
+
+    config ECD_DRIVING_ACTIVE
+        bool "Active Driving"
+        default n
+        help
+            Selects active driving mode for ECD.
+
+endmenu

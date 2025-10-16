@@ -26,9 +26,9 @@ class ECDDrivePassive : public ECDDriveBase<SEGMENT_COUNT>
     {
         for (int i = 0; i < SEGMENT_COUNT; ++i)
         {
-            m_hal->digitalWrite((*m_pins)[i], nextStates[i],
-                                nextStates[i] ? m_config->coloringTime : m_config->bleachingTime,
-                                nextStates[i] ? m_config->coloringVoltage : m_config->bleachingVoltage);
+            m_hal->digitalWrite(
+                (*m_pins)[i], nextStates[i], nextStates[i] ? m_config->coloringTime : m_config->bleachingTime,
+                nextStates[i] ? (m_config->maxAnalogValue - m_config->coloringVoltage) : m_config->bleachingVoltage);
             currentStates[i] = nextStates[i];
         }
     }

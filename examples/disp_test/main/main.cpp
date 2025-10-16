@@ -18,9 +18,15 @@ auto& hal      = app::hal::HAL::getInstance();
 extern "C" void app_main(void)
 {
     // set application config
-    appConfig.hal               = &hal;
-    appConfig.displayIndex      = ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST;
-    appConfig.activeDriving     = false;
+    appConfig.hal          = &hal;
+    appConfig.displayIndex = ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST;
+
+#ifdef CONFIG_ECD_DRIVING_ACTIVE
+    appConfig.activeDriving = true;
+#else
+    appConfig.activeDriving = false;
+#endif
+
     appConfig.analogResolution  = 12;
     appConfig.maxSegmentVoltage = ynv::app::AppConfig_t::MAX_SEGMENT_VOLTAGE;
     appConfig.highPinVoltage    = ynv::app::AppConfig_t::HIGH_PIN_VOLTAGE;
@@ -55,6 +61,6 @@ extern "C" void app_main(void)
     while (true)
     {
         currentAnim.update();
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(3000));
     }
 }
