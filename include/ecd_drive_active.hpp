@@ -34,7 +34,6 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
     void drive(std::array<bool, SEGMENT_COUNT>&       currentStates,
                const std::array<bool, SEGMENT_COUNT>& nextStates) override
     {
-        std::vector<int> tmp;
 
         m_colorPins.clear();
         m_bleachPins.clear();
