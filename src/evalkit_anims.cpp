@@ -95,6 +95,7 @@ void EvalkitAnims::init(const ynv::app::AppConfig_t* appConfig)
         case ECDEvalkitDisplay_t::EVALKIT_DISP_TEST:
             m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
             m_anims[ANIM_TEST]   = std::make_unique<AnimTest>(std::static_pointer_cast<ynv::ecd::DispTest>(display));
+            break;
 
         default:
             break;

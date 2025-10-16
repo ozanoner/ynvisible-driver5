@@ -47,7 +47,5 @@ class DispTest : public ECD<15>
     }
 };
 
-using DispTest = DispTest;  // Alias for testing display
-
 }  // namespace ecd
 }  // namespace ynv

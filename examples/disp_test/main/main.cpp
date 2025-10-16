@@ -1,6 +1,5 @@
 
 #include "app_hal.hpp"
-#include "esp_log.h"
 #include "evalkit_anims.hpp"
 #include "evalkit_displays.hpp"
 #include "freertos/FreeRTOS.h"
