@@ -90,7 +90,6 @@ int HAL::analogRead(int pin)
     esp_err_t err = ESP_OK;
     uint16_t  val = 0;
 
-    ESP_LOGI(TAG, "analogRead: pin=%d", pin);
     assert(pin > 0 && pin < 16);  // CD74HC4067 has 16 channels (0-15), pin-0 won't be used
 
     if ((m_mux.select(pin) == ESP_OK) && (m_mux.enable() == ESP_OK))
@@ -109,6 +108,7 @@ int HAL::analogRead(int pin)
         ESP_LOGE(TAG, "Failed to configure mux");
         return -1;
     }
+    ESP_LOGI(TAG, "analogRead: pin=%d val=%d", pin, val);
 
     return val;
 }

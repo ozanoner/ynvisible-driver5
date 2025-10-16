@@ -77,6 +77,8 @@ class ECDDriveBase
                        ) = 0;
 
    protected:
+    static constexpr const char* TAG = "ECDDrive";
+
     const ECDConfig_t*                    m_config;  // Configuration for the ECD
     const std::array<int, SEGMENT_COUNT>* m_pins;    // Pin numbers for the segments
     ynv::driver::HALBase*                 m_hal;     // Underlying hardware to control pins

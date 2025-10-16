@@ -122,7 +122,7 @@ template <typename DisplayT>
 class Anim : public AnimBase
 {
    public:
-    static constexpr int TRANSITION_RATE_MS = 3000;  // Transition rate to the next state in milliseconds
+    static constexpr int TRANSITION_RATE_MS = 60000;  // Transition rate to the next state in milliseconds
 
     Anim(std::shared_ptr<DisplayT> display) : m_display(display) { }
     virtual ~Anim() = default;
