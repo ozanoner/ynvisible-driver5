@@ -51,6 +51,7 @@ class EvalkitAnims
 
     Anim_t    select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp, Anim_t anim);
     AnimBase& getCurrentAnim() { return *(m_anims[m_currentAnim]); }
+    bool      isSelected() const { return m_currentAnim != ANIM_CNT && m_anims[m_currentAnim] != nullptr; }
 
     typedef void (*StateChangeCallback_f)(AnimBase::State_t);
     void registerStateChangeCallback(StateChangeCallback_f cb) { m_stateChangeCallback = cb; }
