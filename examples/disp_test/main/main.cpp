@@ -52,14 +52,12 @@ extern "C" void app_main(void)
 
     // initialise animations
     anims.init(&appConfig);
-    anims.select(ynv::anim::EvalkitAnims::Anim_t::ANIM_TOGGLE);
-
-    auto& currentAnim = anims.getCurrentAnim();
-    currentAnim.start();
+    anims.select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST,
+                 ynv::anim::EvalkitAnims::Anim_t::ANIM_TOGGLE);
 
     while (true)
     {
-        currentAnim.update();
+        anims.getCurrentAnim().update();
         vTaskDelay(pdMS_TO_TICKS(1000));
     }
 }

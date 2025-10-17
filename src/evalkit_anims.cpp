@@ -39,55 +39,80 @@ void EvalkitAnims::init(const ynv::app::AppConfig_t* appConfig)
     assert(appConfig->displayIndex >= 0 &&
            appConfig->displayIndex < static_cast<int>(ECDEvalkitDisplay_t::EVALKIT_DISP_CNT));
     m_appConfig = appConfig;
+}
+
+EvalkitAnims::Anim_t EvalkitAnims::select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp,
+                                          EvalkitAnims::Anim_t                           anim)
+{
+    assert(anim < ANIM_CNT);
+    assert(disp < ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_CNT);
+
+    if (anim == m_currentAnim && disp == m_disp)
+    {
+        // If the selected animation is already current, do nothing.
+        return m_currentAnim;
+    }
+
+    if (disp != m_disp)
+    {
+        setDisplay();
+        m_disp = disp;
+    }
+
+    // Set the current animation to the selected one
+    m_currentAnim = anim;
+    // Update the callback for state changes
+    m_anims[m_currentAnim]->registerStateChangeCallback(m_stateChangeCallback);
+    m_anims[m_currentAnim]->start();  // Start the newly selected animation
+
+    return m_currentAnim;
+}
+
+void EvalkitAnims::setDisplay()
+{
+    assert(m_appConfig != nullptr);
+
+    m_anims = {};  // reset the list of animations
 
     auto display = ynv::ecd::EvalkitDisplays::getInstance().getDisplay();
-
-    switch (static_cast<ECDEvalkitDisplay_t>(appConfig->displayIndex))
+    switch (static_cast<ECDEvalkitDisplay_t>(m_appConfig->displayIndex))
     {
         case ECDEvalkitDisplay_t::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY:
             m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
-            m_anims[ANIM_1SEG_ON] =
-                std::make_unique<Anim1SegOn>(std::static_pointer_cast<ynv::ecd::DispSingleSegment>(display));
             break;
         case ECDEvalkitDisplay_t::EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY:
             m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
-            m_anims[ANIM_3SEGBAR_COUNTER_UP] =
+            m_anims[ANIM_UP] =
                 std::make_unique<Anim3SegBarCounterUp>(std::static_pointer_cast<ynv::ecd::Disp3SegBar>(display));
-            m_anims[ANIM_3SEGBAR_COUNTER_DOWN] =
+            m_anims[ANIM_DOWN] =
                 std::make_unique<Anim3SegBarCounterDown>(std::static_pointer_cast<ynv::ecd::Disp3SegBar>(display));
-            m_anims[ANIM_3SEGBAR_POS] =
-                std::make_unique<Anim3SegBarPos>(std::static_pointer_cast<ynv::ecd::Disp3SegBar>(display));
             break;
         case ECDEvalkitDisplay_t::EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY:
             m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
-            m_anims[ANIM_7SEGBAR_COUNTER_UP] =
+            m_anims[ANIM_UP] =
                 std::make_unique<Anim7SegBarCounterUp>(std::static_pointer_cast<ynv::ecd::Disp7SegBar>(display));
-            m_anims[ANIM_7SEGBAR_COUNTER_DOWN] =
+            m_anims[ANIM_DOWN] =
                 std::make_unique<Anim7SegBarCounterDown>(std::static_pointer_cast<ynv::ecd::Disp7SegBar>(display));
             break;
         case ECDEvalkitDisplay_t::EVALKIT_DISP_DOT_NUMBER_DISPLAY:
             m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
-            m_anims[ANIM_7SEGNUM_COUNTER_UP] =
+            m_anims[ANIM_UP] =
                 std::make_unique<Anim7SegNumCounterUp>(std::static_pointer_cast<ynv::ecd::DispDotNumber>(display));
-            m_anims[ANIM_7SEGNUM_COUNTER_DOWN] =
+            m_anims[ANIM_DOWN] =
                 std::make_unique<Anim7SegNumCounterDown>(std::static_pointer_cast<ynv::ecd::DispDotNumber>(display));
             break;
         case ECDEvalkitDisplay_t::EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY:
-            m_anims[ANIM_TOGGLE]              = std::make_unique<AnimToggle>(display);
-            m_anims[ANIM_15SEGDEC_COUNTER_UP] = std::make_unique<Anim15SegDecimalCounterUp>(
+            m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
+            m_anims[ANIM_UP]     = std::make_unique<Anim15SegDecimalCounterUp>(
                 std::static_pointer_cast<ynv::ecd::DispDecimalNumber>(display));
-            m_anims[ANIM_15SEGDEC_COUNTER_DOWN] = std::make_unique<Anim15SegDecimalCounterDown>(
+            m_anims[ANIM_DOWN] = std::make_unique<Anim15SegDecimalCounterDown>(
                 std::static_pointer_cast<ynv::ecd::DispDecimalNumber>(display));
             break;
         case ECDEvalkitDisplay_t::EVALKIT_DISP_SIGNED_NUMBER_DISPLAY:
-            m_anims[ANIM_TOGGLE]                          = std::make_unique<AnimToggle>(display);
-            m_anims[ANIM_15SEGSIGNED_POSITIVE_COUNTER_UP] = std::make_unique<Anim15SegSignedPositiveCounterUp>(
+            m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
+            m_anims[ANIM_UP]     = std::make_unique<Anim15SegSignedPositiveCounterUp>(
                 std::static_pointer_cast<ynv::ecd::DispSignedNumber>(display));
-            m_anims[ANIM_15SEGSIGNED_POSITIVE_COUNTER_DOWN] = std::make_unique<Anim15SegSignedPositiveCounterDown>(
-                std::static_pointer_cast<ynv::ecd::DispSignedNumber>(display));
-            m_anims[ANIM_15SEGSIGNED_NEGATIVE_COUNTER_UP] = std::make_unique<Anim15SegSignedNegativeCounterUp>(
-                std::static_pointer_cast<ynv::ecd::DispSignedNumber>(display));
-            m_anims[ANIM_15SEGSIGNED_NEGATIVE_COUNTER_DOWN] = std::make_unique<Anim15SegSignedNegativeCounterDown>(
+            m_anims[ANIM_DOWN] = std::make_unique<Anim15SegSignedPositiveCounterDown>(
                 std::static_pointer_cast<ynv::ecd::DispSignedNumber>(display));
             break;
 
@@ -101,23 +126,6 @@ void EvalkitAnims::init(const ynv::app::AppConfig_t* appConfig)
     }
 
     display->printConfig();
-}
-
-EvalkitAnims::Anim_t EvalkitAnims::select(EvalkitAnims::Anim_t anim)
-{
-    if (m_anims[m_currentAnim]->getState() != AnimBase::State_t::IDLE)
-    {
-        // If there is a running animation, do not change it.
-        // User has to abort the current animation first.
-        return m_currentAnim;
-    }
-
-    // Set the current animation to the selected one
-    m_currentAnim = anim;
-    // Update the callback for state changes
-    m_anims[m_currentAnim]->registerStateChangeCallback(m_stateChangeCallback);
-
-    return m_currentAnim;
 }
 
 }  // namespace anim
