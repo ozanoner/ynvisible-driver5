@@ -14,6 +14,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <map>
 #include <memory>
 
@@ -34,20 +35,8 @@ class EvalkitAnims
     enum Anim_t
     {
         ANIM_TOGGLE = 0,
-        ANIM_15SEGSIGNED_POSITIVE_COUNTER_UP,
-        ANIM_15SEGSIGNED_POSITIVE_COUNTER_DOWN,
-        ANIM_15SEGSIGNED_NEGATIVE_COUNTER_UP,
-        ANIM_15SEGSIGNED_NEGATIVE_COUNTER_DOWN,
-        ANIM_15SEGDEC_COUNTER_UP,
-        ANIM_15SEGDEC_COUNTER_DOWN,
-        ANIM_1SEG_ON,
-        ANIM_7SEGNUM_COUNTER_UP,
-        ANIM_7SEGNUM_COUNTER_DOWN,
-        ANIM_7SEGBAR_COUNTER_UP,
-        ANIM_7SEGBAR_COUNTER_DOWN,
-        ANIM_3SEGBAR_COUNTER_UP,
-        ANIM_3SEGBAR_COUNTER_DOWN,
-        ANIM_3SEGBAR_POS,
+        ANIM_UP,
+        ANIM_DOWN,
         ANIM_TEST,
         ANIM_CNT
     };
@@ -60,71 +49,34 @@ class EvalkitAnims
 
     void init(const ynv::app::AppConfig_t* appConfig);
 
-    Anim_t select(Anim_t anim, bool forward = true);
-
-    Anim_t next();
-    Anim_t previous();
-
-    AnimBase& getCurrentAnim()
-    {
-        return *(m_anims[m_currentAnim]);  // Return a reference to the animation object
-    }
+    Anim_t    select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp, Anim_t anim);
+    AnimBase& getCurrentAnim() { return *(m_anims[m_currentAnim]); }
 
     typedef void (*StateChangeCallback_f)(AnimBase::State_t);
-    void registerStateChangeCallback(StateChangeCallback_f cb)
-    {
-        m_stateChangeCallback = cb;  // Register a callback function for state changes
-    }
-
-    const std::string& getAnimName(Anim_t anim) const
-    {
-        auto it = m_animNames.find(anim);
-        if (it != m_animNames.end())
-        {
-            return it->second;  // Return the name of the animation
-        }
-        return m_animNames.at(ANIM_CNT);  // Default to ANIM_NONE if not found
-    }
+    void registerStateChangeCallback(StateChangeCallback_f cb) { m_stateChangeCallback = cb; }
 
    private:
-    EvalkitAnims()
-        : m_anims({}),
-          m_currentAnim(ANIM_TOGGLE),
-          m_displayType(ECDEvalkitDisplay_t::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY),
-          m_stateChangeCallback(nullptr)
-    {
-    }
+    EvalkitAnims() : m_anims({}), m_currentAnim(ANIM_CNT), m_stateChangeCallback(nullptr) { }
     ~EvalkitAnims()                              = default;
     EvalkitAnims(const EvalkitAnims&)            = delete;
     EvalkitAnims& operator=(const EvalkitAnims&) = delete;
 
     std::array<std::unique_ptr<AnimBase>, ANIM_CNT> m_anims;
 
-    Anim_t              m_currentAnim;
-    ECDEvalkitDisplay_t m_displayType;
-
+    Anim_t                m_currentAnim;
     StateChangeCallback_f m_stateChangeCallback;
 
-    inline static const std::map<Anim_t, std::string> m_animNames = {
-        {ANIM_TOGGLE, "Anim_t::ANIM_TOGGLE"},
-        {ANIM_15SEGSIGNED_POSITIVE_COUNTER_UP, "Anim_t::ANIM_15SEGSIGNED_POSITIVE_COUNTER_UP"},
-        {ANIM_15SEGSIGNED_POSITIVE_COUNTER_DOWN, "Anim_t::ANIM_15SEGSIGNED_POSITIVE_COUNTER_DOWN"},
-        {ANIM_15SEGSIGNED_NEGATIVE_COUNTER_UP, "Anim_t::ANIM_15SEGSIGNED_NEGATIVE_COUNTER_UP"},
-        {ANIM_15SEGSIGNED_NEGATIVE_COUNTER_DOWN, "Anim_t::ANIM_15SEGSIGNED_NEGATIVE_COUNTER_DOWN"},
-        {ANIM_15SEGDEC_COUNTER_UP, "Anim_t::ANIM_15SEGDEC_COUNTER_UP"},
-        {ANIM_15SEGDEC_COUNTER_DOWN, "Anim_t::ANIM_15SEGDEC_COUNTER_DOWN"},
-        {ANIM_1SEG_ON, "Anim_t::ANIM_1SEG_ON"},
-        {ANIM_7SEGNUM_COUNTER_UP, "Anim_t::ANIM_7SEGNUM_COUNTER_UP"},
-        {ANIM_7SEGNUM_COUNTER_DOWN, "Anim_t::ANIM_7SEGNUM_COUNTER_DOWN"},
-        {ANIM_7SEGBAR_COUNTER_UP, "Anim_t::ANIM_7SEGBAR_COUNTER_UP"},
-        {ANIM_7SEGBAR_COUNTER_DOWN, "Anim_t::ANIM_7SEGBAR_COUNTER_DOWN"},
-        {ANIM_3SEGBAR_COUNTER_UP, "Anim_t::ANIM_3SEGBAR_COUNTER_UP"},
-        {ANIM_3SEGBAR_COUNTER_DOWN, "Anim_t::ANIM_3SEGBAR_COUNTER_DOWN"},
-        {ANIM_3SEGBAR_POS, "Anim_t::ANIM_3SEGBAR_POS"},
-        {ANIM_TEST, "Anim_t::ANIM_TEST"},
-        {ANIM_CNT, "Anim_t::ANIM_NONE"}};
+    inline static const std::map<Anim_t, std::string> m_animNames = {{ANIM_TOGGLE, "Toggle"},
+                                                                     {ANIM_UP, "Count Up"},
+                                                                     {ANIM_DOWN, "Count Down"},
+                                                                     {ANIM_TEST, "Run test"},
+                                                                     {ANIM_CNT, "None"}};
 
-    const ynv::app::AppConfig_t* m_appConfig = nullptr;
+    const ynv::app::AppConfig_t*                   m_appConfig = nullptr;
+    ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t m_disp =
+        ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_CNT;
+
+    void setDisplay();
 };
 
 }  // namespace anim
