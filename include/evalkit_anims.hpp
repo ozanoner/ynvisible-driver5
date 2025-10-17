@@ -14,6 +14,7 @@
 #pragma once
 
 #include <array>
+#include <functional>
 #include <map>
 #include <memory>
 
@@ -60,49 +61,21 @@ class EvalkitAnims
 
     void init(const ynv::app::AppConfig_t* appConfig);
 
-    Anim_t select(Anim_t anim, bool forward = true);
-
-    Anim_t next();
-    Anim_t previous();
-
-    AnimBase& getCurrentAnim()
-    {
-        return *(m_anims[m_currentAnim]);  // Return a reference to the animation object
-    }
+    Anim_t    select(Anim_t anim);
+    AnimBase& getCurrentAnim() { return *(m_anims[m_currentAnim]); }
 
     typedef void (*StateChangeCallback_f)(AnimBase::State_t);
-    void registerStateChangeCallback(StateChangeCallback_f cb)
-    {
-        m_stateChangeCallback = cb;  // Register a callback function for state changes
-    }
-
-    const std::string& getAnimName(Anim_t anim) const
-    {
-        auto it = m_animNames.find(anim);
-        if (it != m_animNames.end())
-        {
-            return it->second;  // Return the name of the animation
-        }
-        return m_animNames.at(ANIM_CNT);  // Default to ANIM_NONE if not found
-    }
+    void registerStateChangeCallback(StateChangeCallback_f cb) { m_stateChangeCallback = cb; }
 
    private:
-    EvalkitAnims()
-        : m_anims({}),
-          m_currentAnim(ANIM_TOGGLE),
-          m_displayType(ECDEvalkitDisplay_t::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY),
-          m_stateChangeCallback(nullptr)
-    {
-    }
+    EvalkitAnims() : m_anims({}), m_currentAnim(ANIM_TOGGLE), m_stateChangeCallback(nullptr) { }
     ~EvalkitAnims()                              = default;
     EvalkitAnims(const EvalkitAnims&)            = delete;
     EvalkitAnims& operator=(const EvalkitAnims&) = delete;
 
     std::array<std::unique_ptr<AnimBase>, ANIM_CNT> m_anims;
 
-    Anim_t              m_currentAnim;
-    ECDEvalkitDisplay_t m_displayType;
-
+    Anim_t                m_currentAnim;
     StateChangeCallback_f m_stateChangeCallback;
 
     inline static const std::map<Anim_t, std::string> m_animNames = {

@@ -40,10 +40,9 @@ void EvalkitAnims::init(const ynv::app::AppConfig_t* appConfig)
            appConfig->displayIndex < static_cast<int>(ECDEvalkitDisplay_t::EVALKIT_DISP_CNT));
     m_appConfig = appConfig;
 
-    auto display  = ynv::ecd::EvalkitDisplays::getInstance().getDisplay();
-    m_displayType = static_cast<ECDEvalkitDisplay_t>(appConfig->displayIndex);
+    auto display = ynv::ecd::EvalkitDisplays::getInstance().getDisplay();
 
-    switch (m_displayType)
+    switch (static_cast<ECDEvalkitDisplay_t>(appConfig->displayIndex))
     {
         case ECDEvalkitDisplay_t::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY:
             m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);
@@ -104,7 +103,7 @@ void EvalkitAnims::init(const ynv::app::AppConfig_t* appConfig)
     display->printConfig();
 }
 
-EvalkitAnims::Anim_t EvalkitAnims::select(EvalkitAnims::Anim_t anim, bool forward)
+EvalkitAnims::Anim_t EvalkitAnims::select(EvalkitAnims::Anim_t anim)
 {
     if (m_anims[m_currentAnim]->getState() != AnimBase::State_t::IDLE)
     {
@@ -113,35 +112,12 @@ EvalkitAnims::Anim_t EvalkitAnims::select(EvalkitAnims::Anim_t anim, bool forwar
         return m_currentAnim;
     }
 
-    // no infinite loop as AnimToggle is supported by all displays
-    while (m_anims[anim] == nullptr)
-    {
-        if (forward)
-        {
-            anim = static_cast<Anim_t>((anim + 1) % ANIM_CNT);
-        }
-        else
-        {
-            anim = static_cast<Anim_t>((anim + ANIM_CNT - 1) % ANIM_CNT);
-        }
-    }
-
     // Set the current animation to the selected one
     m_currentAnim = anim;
     // Update the callback for state changes
     m_anims[m_currentAnim]->registerStateChangeCallback(m_stateChangeCallback);
 
     return m_currentAnim;
-}
-
-EvalkitAnims::Anim_t EvalkitAnims::next()
-{
-    return select(static_cast<Anim_t>((m_currentAnim + 1) % ANIM_CNT));
-}
-
-EvalkitAnims::Anim_t EvalkitAnims::previous()
-{
-    return select(static_cast<Anim_t>((m_currentAnim + ANIM_CNT - 1) % ANIM_CNT), false);
 }
 
 }  // namespace anim
