@@ -12,7 +12,7 @@ namespace anim
 class AnimToggle : public Anim<ynv::ecd::ECDBase>
 {
    public:
-    AnimToggle(std::shared_ptr<ynv::ecd::ECDBase> display) : Anim<ynv::ecd::ECDBase>(display) { }
+    explicit AnimToggle(std::shared_ptr<ynv::ecd::ECDBase> display) : Anim<ynv::ecd::ECDBase>(display) { }
 
    protected:
     void transition() override

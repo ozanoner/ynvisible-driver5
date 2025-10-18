@@ -67,18 +67,18 @@ class EvalkitDisplays
         m_appConfig = appConfig;  // Store the application configuration
 
         m_displays[EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY] =
-            std::make_shared<DispSingleSegment>(&singleSegmentDisplayPins, m_appConfig);
+            std::make_shared<DispSingleSegment>(&DispSingleSegment::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY] =
-            std::make_shared<Disp3SegBar>(&threeSegmentBarDisplayPins, m_appConfig);
+            std::make_shared<Disp3SegBar>(&Disp3SegBar::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY] =
-            std::make_shared<Disp7SegBar>(&sevenSegmentBarDisplayPins, m_appConfig);
+            std::make_shared<Disp7SegBar>(&Disp7SegBar::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_DOT_NUMBER_DISPLAY] =
             std::make_shared<DispDotNumber>(&DispDotNumber::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY] =
             std::make_shared<DispDecimalNumber>(&DispDecimalNumber::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_SIGNED_NUMBER_DISPLAY] =
             std::make_shared<DispSignedNumber>(&DispSignedNumber::PINS, m_appConfig);
-        m_displays[EVALKIT_DISP_TEST] = std::make_shared<DispTest>(&testDisplayPins, m_appConfig);
+        m_displays[EVALKIT_DISP_TEST] = std::make_shared<DispTest>(&DispTest::PINS, m_appConfig);
 
         std::for_each(m_displays.begin(), m_displays.end(), [](auto& d) { d->init(); });
 
@@ -110,16 +110,6 @@ class EvalkitDisplays
     // Delete copy/move to enforce singleton
     EvalkitDisplays(const EvalkitDisplays&)            = delete;
     EvalkitDisplays& operator=(const EvalkitDisplays&) = delete;
-
-    // Pin arrays
-    static constexpr std::array<int, 1> singleSegmentDisplayPins {PIN_SEG_1};
-    static constexpr std::array<int, 3> threeSegmentBarDisplayPins {PIN_SEG_2, PIN_SEG_1, PIN_SEG_3};
-    static constexpr std::array<int, 7> sevenSegmentBarDisplayPins {PIN_SEG_4, PIN_SEG_3, PIN_SEG_5, PIN_SEG_2,
-                                                                    PIN_SEG_6, PIN_SEG_1, PIN_SEG_7};
-
-    static constexpr std::array<int, 15> testDisplayPins {PIN_SEG_1,  PIN_SEG_2,  PIN_SEG_3,  PIN_SEG_4,  PIN_SEG_5,
-                                                          PIN_SEG_6,  PIN_SEG_7,  PIN_SEG_8,  PIN_SEG_9,  PIN_SEG_10,
-                                                          PIN_SEG_11, PIN_SEG_12, PIN_SEG_13, PIN_SEG_14, PIN_SEG_15};
 
     std::array<std::shared_ptr<ECDBase>, EVALKIT_DISP_CNT> m_displays;    // all displays
     std::shared_ptr<ECDBase>                               m_displayPtr;  // Pointer to the current display

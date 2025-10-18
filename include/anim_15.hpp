@@ -12,7 +12,7 @@ namespace anim
 class Anim3SegBarPos : public Anim<ynv::ecd::Disp3SegBar>
 {
    public:
-    Anim3SegBarPos(std::shared_ptr<ynv::ecd::Disp3SegBar> display) : Anim<ynv::ecd::Disp3SegBar>(display) { }
+    explicit Anim3SegBarPos(std::shared_ptr<ynv::ecd::Disp3SegBar> display) : Anim<ynv::ecd::Disp3SegBar>(display) { }
 
    protected:
     void transition() override

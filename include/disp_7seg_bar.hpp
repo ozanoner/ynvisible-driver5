@@ -12,6 +12,9 @@ class Disp7SegBar : public ECD<7>
    public:
     using ECD<7>::ECD;  // Inherit constructors from ECD<7>
 
+    static constexpr std::array<int, 7> PINS {PIN_SEG_4, PIN_SEG_3, PIN_SEG_5, PIN_SEG_2,
+                                              PIN_SEG_6, PIN_SEG_1, PIN_SEG_7};
+
     // Function to toggle the state of the segments
     void increment()
     {

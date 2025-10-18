@@ -12,7 +12,10 @@ namespace anim
 class Anim7SegNumCounterUp : public Anim<ynv::ecd::DispDotNumber>
 {
    public:
-    Anim7SegNumCounterUp(std::shared_ptr<ynv::ecd::DispDotNumber> display) : Anim<ynv::ecd::DispDotNumber>(display) { }
+    explicit Anim7SegNumCounterUp(std::shared_ptr<ynv::ecd::DispDotNumber> display)
+        : Anim<ynv::ecd::DispDotNumber>(display)
+    {
+    }
 
    protected:
     void transition() override
