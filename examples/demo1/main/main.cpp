@@ -24,9 +24,7 @@ static void animTask(void* pvParameters);
 extern "C" void app_main(void)
 {
     // set application config
-    appConfig.hal = &hal;
-    // appConfig.displayIndex = ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST;
-
+    appConfig.hal               = &hal;
     appConfig.activeDriving     = true;
     appConfig.analogResolution  = 12;
     appConfig.maxSegmentVoltage = ynv::app::AppConfig_t::MAX_SEGMENT_VOLTAGE;
@@ -54,9 +52,6 @@ extern "C" void app_main(void)
 
     // initialise displays
     displays.init(&appConfig);
-
-    // anims.select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST,
-    //              ynv::anim::EvalkitAnims::Anim_t::ANIM_TOGGLE);
 
     m_gui.registerButtonHandler(
         [](const app::disp::DisplayAnimInfo_t* info)
