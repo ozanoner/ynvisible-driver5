@@ -1,4 +1,3 @@
-
 #include "app_gui.hpp"
 
 #include <array>
@@ -28,14 +27,14 @@ esp_err_t GUI::init()
 
 esp_err_t GUI::show()
 {
-    const std::array<lv_dir_t, app::DisplayInfo::DISP_CNT> dispDirs = {
+    GUILock lock;
+
+    constexpr std::array<lv_dir_t, app::DisplayInfo::DISP_CNT> dispDirs = {
         static_cast<lv_dir_t>(LV_DIR_BOTTOM | LV_DIR_RIGHT), static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_TOP | LV_DIR_RIGHT)};
-
-    bsp_display_lock(0);
 
     lv_obj_t* tv = lv_tileview_create(lv_screen_active());
 
@@ -50,7 +49,6 @@ esp_err_t GUI::show()
         addAnimationButtons(tv, static_cast<app::DisplayInfo::ECD_t>(i));
     }
 
-    bsp_display_unlock();
     return ESP_OK;
 }
 
@@ -89,7 +87,7 @@ esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, app::DisplayInfo::ECD_t display
     // add anim buttons
     lv_obj_t* list1 = lv_list_create(tile1);
     lv_obj_set_size(list1, LV_PCT(100), LV_PCT(100));
-    for (const auto& btnName : app::DisplayInfo::m_dispAnimNames[display])
+    for (const auto& btnName : app::DisplayInfo::m_dispAnimNames.at(display))
     {
         btnInfos.emplace_back(BtnInfo {display, btnName, nullptr, false, label1});
 

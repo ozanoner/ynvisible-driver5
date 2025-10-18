@@ -1,9 +1,9 @@
 #pragma once
 
-#include <array>
 #include <map>
 #include <vector>
 
+#include "evalkit_anims.hpp"
 #include "evalkit_displays.hpp"
 
 namespace app
@@ -25,16 +25,17 @@ struct DisplayInfo
         DISP_CNT
     };
 
-    static inline const std::array<std::vector<const char*>, DISP_CNT> m_dispAnimNames = {
-        {{"Toggle", "Count up", "Count down"},
-         {"Toggle", "Count up"},
-         {"Toggle", "Count up"},
-         {"Toggle"},
-         {"Toggle", "Count up", "Count down"},
-         {"Toggle"},
-         {"Toggle"},
-         {"Toggle"},
-         {"Toggle", "Count up", "Count down"}}};
+    // Map from DisplayInfo::ECD_t to supported animation names
+    static inline const std::map<ECD_t, std::vector<const char*>> m_dispAnimNames = {
+        {DISP431V2PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP, ynv::anim::ANIM_NAME_COUNT_DOWN}},
+        {DISP433V1PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP}},
+        {DISP434V1PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP}},
+        {DISP437V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
+        {DISP438V2PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP, ynv::anim::ANIM_NAME_COUNT_DOWN}},
+        {DISP440V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
+        {DISP442V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
+        {DISP443V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
+        {DISP444V1PV2, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP, ynv::anim::ANIM_NAME_COUNT_DOWN}}};
 
     // Map from DisplayInfo::ECD_t to EvalkitDisplays::ECDEvalkitDisplay_t
     static inline const std::map<ECD_t, ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t> m_ecdTypeMap = {

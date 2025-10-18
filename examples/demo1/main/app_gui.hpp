@@ -6,11 +6,15 @@
 #include <string>
 
 #include "app_disp_info.hpp"
+#include "bsp/esp-bsp.h"
 #include "disp_images.hpp"
 #include "esp_err.h"
 
 namespace app
 {
+/**
+ * @brief GUI class for managing the graphical user interface
+ */
 class GUI
 {
    public:
@@ -43,6 +47,16 @@ class GUI
    private:
     // Private constructor
     GUI() = default;
+
+    /**
+     * @brief RAII class for GUI locking
+     */
+    class GUILock
+    {
+       public:
+        GUILock() { bsp_display_lock(0); }
+        ~GUILock() { bsp_display_unlock(); }
+    };
 
     static inline const std::map<app::DisplayInfo::ECD_t, const lv_image_dsc_t*> m_dispFileMap = {
         {app::DisplayInfo::DISP431V2PV1, &disp431v2pv1}, {app::DisplayInfo::DISP433V1PV1, &disp433v1pv1},
