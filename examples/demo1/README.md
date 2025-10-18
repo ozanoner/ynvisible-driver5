@@ -103,6 +103,11 @@ idf.py flash monitor
 4. **Choose animation** to start the electrochromic effect
 5. **Monitor status** through the on-screen indicators
 
+Serial monitoring:   
+```
+$ idf.py monitor --print-filter="*:I HAL:W gpio:W ECDDrive:W" -p /dev/ttyACM0 
+```
+
 ## Project Structure
 
 ```

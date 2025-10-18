@@ -28,23 +28,6 @@
 #include "disp_test.hpp"
 #include "ecd.hpp"
 
-// pin-0 is for common
-#define PIN_SEG_1 1
-#define PIN_SEG_2 2
-#define PIN_SEG_3 3
-#define PIN_SEG_4 4
-#define PIN_SEG_5 5
-#define PIN_SEG_6 6
-#define PIN_SEG_7 7
-#define PIN_SEG_8 8
-#define PIN_SEG_9 9
-#define PIN_SEG_10 10
-#define PIN_SEG_11 11
-#define PIN_SEG_12 12
-#define PIN_SEG_13 13
-#define PIN_SEG_14 14
-#define PIN_SEG_15 15
-
 namespace ynv
 {
 namespace ecd
@@ -91,7 +74,7 @@ class EvalkitDisplays
         m_displays[EVALKIT_DISP_DOT_NUMBER_DISPLAY] =
             std::make_shared<DispDotNumber>(&dotNumberDisplayPins, m_appConfig);
         m_displays[EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY] =
-            std::make_shared<DispDecimalNumber>(&decimalNumberDisplayPins, m_appConfig);
+            std::make_shared<DispDecimalNumber>(&DispDecimalNumber::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_SIGNED_NUMBER_DISPLAY] =
             std::make_shared<DispSignedNumber>(&signedNumberDisplayPins, m_appConfig);
         m_displays[EVALKIT_DISP_TEST] = std::make_shared<DispTest>(&testDisplayPins, m_appConfig);
@@ -128,15 +111,13 @@ class EvalkitDisplays
     EvalkitDisplays& operator=(const EvalkitDisplays&) = delete;
 
     // Pin arrays
-    static constexpr std::array<int, 1>  singleSegmentDisplayPins {PIN_SEG_1};
-    static constexpr std::array<int, 3>  threeSegmentBarDisplayPins {PIN_SEG_2, PIN_SEG_1, PIN_SEG_3};
-    static constexpr std::array<int, 7>  sevenSegmentBarDisplayPins {PIN_SEG_4, PIN_SEG_3, PIN_SEG_5, PIN_SEG_2,
+    static constexpr std::array<int, 1> singleSegmentDisplayPins {PIN_SEG_1};
+    static constexpr std::array<int, 3> threeSegmentBarDisplayPins {PIN_SEG_2, PIN_SEG_1, PIN_SEG_3};
+    static constexpr std::array<int, 7> sevenSegmentBarDisplayPins {PIN_SEG_4, PIN_SEG_3, PIN_SEG_5, PIN_SEG_2,
                                                                     PIN_SEG_6, PIN_SEG_1, PIN_SEG_7};
-    static constexpr std::array<int, 8>  dotNumberDisplayPins {PIN_SEG_6, PIN_SEG_8, PIN_SEG_7, PIN_SEG_5,
+    static constexpr std::array<int, 8> dotNumberDisplayPins {PIN_SEG_6, PIN_SEG_8, PIN_SEG_7, PIN_SEG_5,
                                                               PIN_SEG_4, PIN_SEG_3, PIN_SEG_1, PIN_SEG_2};
-    static constexpr std::array<int, 15> decimalNumberDisplayPins {
-        PIN_SEG_8,  PIN_SEG_1,  PIN_SEG_7,  PIN_SEG_6,  PIN_SEG_5, PIN_SEG_4,  PIN_SEG_2, PIN_SEG_3,
-        PIN_SEG_14, PIN_SEG_13, PIN_SEG_11, PIN_SEG_10, PIN_SEG_9, PIN_SEG_15, PIN_SEG_12};
+
     static constexpr std::array<int, 15> signedNumberDisplayPins {
         PIN_SEG_4,  PIN_SEG_2,  PIN_SEG_1,  PIN_SEG_8,  PIN_SEG_7, PIN_SEG_6,  PIN_SEG_3, PIN_SEG_5,
         PIN_SEG_14, PIN_SEG_13, PIN_SEG_11, PIN_SEG_10, PIN_SEG_9, PIN_SEG_15, PIN_SEG_12};
