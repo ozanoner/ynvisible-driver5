@@ -17,7 +17,7 @@ namespace app
 struct AppConfig_t
 {
     // Specify the display type attached to the EvalKit v5
-    int displayIndex;  // Use ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t enum for this
+    // int displayIndex;  // Use ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t enum for this
     // Define the ECD driving algorithm. true for active driving, false for passive driving
     bool activeDriving;
     // ADC/DAC resolution
@@ -28,7 +28,7 @@ struct AppConfig_t
     // High pin voltage (mV) mapped to the DAC resolution
     int highPinVoltage;
     // Pointer to hardware abstraction layer (HAL) instance
-    void *hal;
+    void* hal;
 
     static const int MAX_SEGMENT_VOLTAGE = 1400;  // Maximum voltage to apply on an ECD segment (mV)
     static const int HIGH_PIN_VOLTAGE    = 3300;  // ESP32 pin HIGH value (mV)

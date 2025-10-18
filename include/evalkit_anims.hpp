@@ -29,6 +29,11 @@ namespace anim
 
 using ECDEvalkitDisplay_t = ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t;
 
+constexpr const char* ANIM_NAME_TOGGLE     = "Toggle";
+constexpr const char* ANIM_NAME_COUNT_UP   = "Count Up";
+constexpr const char* ANIM_NAME_COUNT_DOWN = "Count Down";
+constexpr const char* ANIM_NAME_TEST       = "Run test";
+
 class EvalkitAnims
 {
    public:
@@ -47,36 +52,37 @@ class EvalkitAnims
         return instance;
     }
 
-    void init(const ynv::app::AppConfig_t* appConfig);
-
     Anim_t    select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp, Anim_t anim);
     AnimBase& getCurrentAnim() { return *(m_anims[m_currentAnim]); }
+    bool      isSelected() const { return m_currentAnim != ANIM_CNT && m_anims[m_currentAnim] != nullptr; }
 
     typedef void (*StateChangeCallback_f)(AnimBase::State_t);
     void registerStateChangeCallback(StateChangeCallback_f cb) { m_stateChangeCallback = cb; }
 
+    inline static const std::map<Anim_t, std::string> m_animNames = {{ANIM_TOGGLE, ANIM_NAME_TOGGLE},
+                                                                     {ANIM_UP, ANIM_NAME_COUNT_UP},
+                                                                     {ANIM_DOWN, ANIM_NAME_COUNT_DOWN},
+                                                                     {ANIM_TEST, ANIM_NAME_TEST},
+                                                                     {ANIM_CNT, "None"}};
+
    private:
-    EvalkitAnims() : m_anims({}), m_currentAnim(ANIM_CNT), m_stateChangeCallback(nullptr) { }
+    EvalkitAnims()
+        : m_anims({}),
+          m_currentAnim(ANIM_CNT),
+          m_stateChangeCallback(nullptr),
+          m_dispIndex(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_CNT)
+    {
+    }
     ~EvalkitAnims()                              = default;
     EvalkitAnims(const EvalkitAnims&)            = delete;
     EvalkitAnims& operator=(const EvalkitAnims&) = delete;
 
     std::array<std::unique_ptr<AnimBase>, ANIM_CNT> m_anims;
+    Anim_t                                          m_currentAnim;
+    StateChangeCallback_f                           m_stateChangeCallback;
+    ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t  m_dispIndex;
 
-    Anim_t                m_currentAnim;
-    StateChangeCallback_f m_stateChangeCallback;
-
-    inline static const std::map<Anim_t, std::string> m_animNames = {{ANIM_TOGGLE, "Toggle"},
-                                                                     {ANIM_UP, "Count Up"},
-                                                                     {ANIM_DOWN, "Count Down"},
-                                                                     {ANIM_TEST, "Run test"},
-                                                                     {ANIM_CNT, "None"}};
-
-    const ynv::app::AppConfig_t*                   m_appConfig = nullptr;
-    ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t m_disp =
-        ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_CNT;
-
-    void setDisplay();
+    void setDisplay(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp);
 };
 
 }  // namespace anim
