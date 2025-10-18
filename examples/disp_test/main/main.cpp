@@ -17,8 +17,7 @@ auto& hal      = app::hal::HAL::getInstance();
 extern "C" void app_main(void)
 {
     // set application config
-    appConfig.hal          = &hal;
-    appConfig.displayIndex = ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST;
+    appConfig.hal = &hal;
 
 #ifdef CONFIG_ECD_DRIVING_ACTIVE
     appConfig.activeDriving = true;
@@ -50,8 +49,7 @@ extern "C" void app_main(void)
     // initialise displays
     displays.init(&appConfig);
 
-    // initialise animations
-    anims.init(&appConfig);
+    // select animation
     anims.select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST,
                  ynv::anim::EvalkitAnims::Anim_t::ANIM_TOGGLE);
 
