@@ -29,7 +29,7 @@ esp_err_t GUI::show()
 {
     GUILock lock;
 
-    constexpr std::array<lv_dir_t, app::DisplayInfo::DISP_CNT> dispDirs = {
+    constexpr std::array<lv_dir_t, app::disp::DISP_CNT> dispDirs = {
         static_cast<lv_dir_t>(LV_DIR_BOTTOM | LV_DIR_RIGHT), static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
@@ -41,12 +41,12 @@ esp_err_t GUI::show()
     for (size_t i = 0; i < dispDirs.size(); ++i)
     {
         // Create tile for each display
-        lv_obj_t* tile = lv_tileview_add_tile(tv, 0, static_cast<app::DisplayInfo::ECD_t>(i), dispDirs[i]);
+        lv_obj_t* tile = lv_tileview_add_tile(tv, 0, static_cast<app::disp::ECD_t>(i), dispDirs[i]);
         lv_obj_t* img  = lv_image_create(tile);
-        lv_image_set_src(img, m_dispFileMap.at(static_cast<app::DisplayInfo::ECD_t>(i)));
+        lv_image_set_src(img, m_dispFileMap.at(static_cast<app::disp::ECD_t>(i)));
         lv_obj_center(img);
         // add animation buttons
-        addAnimationButtons(tv, static_cast<app::DisplayInfo::ECD_t>(i));
+        addAnimationButtons(tv, static_cast<app::disp::ECD_t>(i));
     }
 
     return ESP_OK;
@@ -58,7 +58,7 @@ static void btnEventHandler(lv_event_t* e)
 
     if (code == LV_EVENT_VALUE_CHANGED)
     {
-        GUI::BtnInfo& btnInfo = *static_cast<GUI::BtnInfo*>(lv_event_get_user_data(e));
+        GUI::BtnInfo_t& btnInfo = *static_cast<GUI::BtnInfo_t*>(lv_event_get_user_data(e));
         ESP_LOGI(GUI::TAG, "Button event (%s)", btnInfo.animBtnName);
 
         btnInfo.checked = !btnInfo.checked;
@@ -71,7 +71,7 @@ static void btnEventHandler(lv_event_t* e)
     }
 }
 
-esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, app::DisplayInfo::ECD_t display)
+esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, app::disp::ECD_t display)
 {
     // add a new tile for animation buttons
     lv_obj_t* tile1 = lv_tileview_add_tile(tv, 1, display, LV_DIR_LEFT);
@@ -87,9 +87,9 @@ esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, app::DisplayInfo::ECD_t display
     // add anim buttons
     lv_obj_t* list1 = lv_list_create(tile1);
     lv_obj_set_size(list1, LV_PCT(100), LV_PCT(100));
-    for (const auto& btnName : app::DisplayInfo::m_dispAnimNames.at(display))
+    for (const auto& btnName : app::disp::m_dispAnimNames.at(display))
     {
-        btnInfos.emplace_back(BtnInfo {display, btnName, nullptr, false, label1});
+        btnInfos.emplace_back(BtnInfo_t {display, btnName, nullptr, false, label1});
 
         lv_obj_t* btn = lv_list_add_btn(list1, nullptr, btnName);
         lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
