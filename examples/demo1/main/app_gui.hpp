@@ -35,11 +35,10 @@ class GUI
 
     struct BtnInfo_t
     {
-        app::disp::ECD_t                  display;
-        const char*                       animBtnName;
-        std::function<void(lv_event_t*)>* animHandler;
-        bool                              checked;
-        lv_obj_t*                         statusLabel;
+        const app::disp::DisplayAnimInfo_t* animInfo;
+        std::function<void(lv_event_t*)>*   animHandler;
+        bool                                checked;
+        lv_obj_t*                           statusLabel;
     };
 
     static constexpr const char* TAG = "GUI";

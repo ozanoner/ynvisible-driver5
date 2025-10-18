@@ -59,7 +59,7 @@ static void btnEventHandler(lv_event_t* e)
     if (code == LV_EVENT_VALUE_CHANGED)
     {
         GUI::BtnInfo_t& btnInfo = *static_cast<GUI::BtnInfo_t*>(lv_event_get_user_data(e));
-        ESP_LOGI(GUI::TAG, "Button event (%s)", btnInfo.animBtnName);
+        ESP_LOGI(GUI::TAG, "Button event (%s)", btnInfo.animInfo->animName);
 
         btnInfo.checked = !btnInfo.checked;
         lv_label_set_text(btnInfo.statusLabel, btnInfo.checked ? "#00ff00 Playing#" : "#ff0000 Select#");
@@ -87,11 +87,11 @@ esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, app::disp::ECD_t display)
     // add anim buttons
     lv_obj_t* list1 = lv_list_create(tile1);
     lv_obj_set_size(list1, LV_PCT(100), LV_PCT(100));
-    for (const auto& btnName : app::disp::m_dispAnimNames.at(display))
+    for (const auto& animInfo : app::disp::ECD_ANIM_INFO.at(display))
     {
-        btnInfos.emplace_back(BtnInfo_t {display, btnName, nullptr, false, label1});
+        btnInfos.emplace_back(BtnInfo_t {&animInfo, nullptr, false, label1});
 
-        lv_obj_t* btn = lv_list_add_btn(list1, nullptr, btnName);
+        lv_obj_t* btn = lv_list_add_btn(list1, nullptr, animInfo.animName);
         lv_obj_add_flag(btn, LV_OBJ_FLAG_CHECKABLE);
         lv_obj_add_event_cb(btn, btnEventHandler, LV_EVENT_VALUE_CHANGED, &btnInfos.back());
     }

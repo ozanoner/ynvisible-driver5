@@ -38,28 +38,65 @@ struct DisplayAnimInfo_t
     }
 };
 
-// Map from disp::ECD_t to supported animation names
-static inline const std::map<ECD_t, std::vector<const char*>> m_dispAnimNames = {
-    {DISP431V2PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP, ynv::anim::ANIM_NAME_COUNT_DOWN}},
-    {DISP433V1PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP}},
-    {DISP434V1PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP}},
-    {DISP437V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
-    {DISP438V2PV1, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP, ynv::anim::ANIM_NAME_COUNT_DOWN}},
-    {DISP440V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
-    {DISP442V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
-    {DISP443V2PV1, {ynv::anim::ANIM_NAME_TOGGLE}},
-    {DISP444V1PV2, {ynv::anim::ANIM_NAME_TOGGLE, ynv::anim::ANIM_NAME_COUNT_UP, ynv::anim::ANIM_NAME_COUNT_DOWN}}};
-
+// Keep this as reference
 // Map from disp::ECD_t to EvalkitDisplays::ECDEvalkitDisplay_t
-static inline const std::map<ECD_t, ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t> m_ecdTypeMap = {
-    {DISP431V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY},
-    {DISP433V1PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY},
-    {DISP434V1PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DOT_NUMBER_DISPLAY},
-    {DISP437V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
-    {DISP438V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY},
-    {DISP440V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
-    {DISP442V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
-    {DISP443V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
-    {DISP444V1PV2, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SIGNED_NUMBER_DISPLAY}};
+// static inline const std::map<ECD_t, ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t> m_ecdTypeMap = {
+//     {DISP431V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY},
+//     {DISP433V1PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY},
+//     {DISP434V1PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DOT_NUMBER_DISPLAY},
+//     {DISP437V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
+//     {DISP438V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY},
+//     {DISP440V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
+//     {DISP442V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
+//     {DISP443V2PV1, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY},
+//     {DISP444V1PV2, ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SIGNED_NUMBER_DISPLAY}};
+
+// Map from disp::ECD_t to supported animations with full info
+static inline const std::map<ECD_t, std::vector<DisplayAnimInfo_t>> ECD_ANIM_INFO = {
+    {DISP431V2PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY, ynv::anim::ANIM_NAME_COUNT_UP,
+       ynv::anim::EvalkitAnims::ANIM_UP},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY, ynv::anim::ANIM_NAME_COUNT_DOWN,
+       ynv::anim::EvalkitAnims::ANIM_DOWN}}},
+    {DISP433V1PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_COUNT_UP,
+       ynv::anim::EvalkitAnims::ANIM_UP},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_COUNT_DOWN,
+       ynv::anim::EvalkitAnims::ANIM_DOWN}}},
+    {DISP434V1PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DOT_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_DOT_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_COUNT_UP,
+       ynv::anim::EvalkitAnims::ANIM_UP}}},
+    {DISP437V2PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE}}},
+    {DISP438V2PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY, ynv::anim::ANIM_NAME_COUNT_UP,
+       ynv::anim::EvalkitAnims::ANIM_UP},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY, ynv::anim::ANIM_NAME_COUNT_DOWN,
+       ynv::anim::EvalkitAnims::ANIM_DOWN}}},
+    {DISP440V2PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE}}},
+    {DISP442V2PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE}}},
+    {DISP443V2PV1,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE}}},
+    {DISP444V1PV2,
+     {{ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SIGNED_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_TOGGLE,
+       ynv::anim::EvalkitAnims::ANIM_TOGGLE},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SIGNED_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_COUNT_UP,
+       ynv::anim::EvalkitAnims::ANIM_UP},
+      {ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SIGNED_NUMBER_DISPLAY, ynv::anim::ANIM_NAME_COUNT_DOWN,
+       ynv::anim::EvalkitAnims::ANIM_DOWN}}}};
 }  // namespace disp
 }  // namespace app
