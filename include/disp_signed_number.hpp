@@ -9,13 +9,13 @@ namespace ynv
 {
 namespace ecd
 {
-class DispDecimalNumber : public ECD<15>
+class DispSignedNumber : public ECD<15>
 {
    public:
     using ECD<15>::ECD;  // Inherit constructors from ECD<15>
 
-    static constexpr std::array<int, 15> PINS {PIN_SEG_8,  PIN_SEG_1, PIN_SEG_2,  PIN_SEG_3,  PIN_SEG_4,
-                                               PIN_SEG_5,  PIN_SEG_6, PIN_SEG_7,  PIN_SEG_14, PIN_SEG_15,
+    static constexpr std::array<int, 15> PINS {PIN_SEG_4,  PIN_SEG_2, PIN_SEG_3,  PIN_SEG_5,  PIN_SEG_6,
+                                               PIN_SEG_7,  PIN_SEG_8, PIN_SEG_1,  PIN_SEG_14, PIN_SEG_15,
                                                PIN_SEG_12, PIN_SEG_9, PIN_SEG_10, PIN_SEG_11, PIN_SEG_13};
 
     void show(uint8_t number1, uint8_t number2, bool dotOrMinus = true)

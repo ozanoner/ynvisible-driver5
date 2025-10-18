@@ -54,7 +54,7 @@ template <int SEGMENT_COUNT>
 class ECD : public ECDBase
 {
    public:
-    ECD(const std::array<int, SEGMENT_COUNT>* pins, const ynv::app::AppConfig_t* appConfig)
+    explicit ECD(const std::array<int, SEGMENT_COUNT>* pins, const ynv::app::AppConfig_t* appConfig)
         : m_pins(pins), m_states({}), m_nextStates({}), m_driver(nullptr), m_appConfig(appConfig)
     {
         assert(m_appConfig != nullptr);

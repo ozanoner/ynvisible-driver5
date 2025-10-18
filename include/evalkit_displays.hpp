@@ -24,6 +24,7 @@
 #include "disp_7seg_bar.hpp"
 #include "disp_decimal_number.hpp"
 #include "disp_dot_number.hpp"
+#include "disp_signed_number.hpp"
 #include "disp_single_segment.hpp"
 #include "disp_test.hpp"
 #include "ecd.hpp"
@@ -76,7 +77,7 @@ class EvalkitDisplays
         m_displays[EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY] =
             std::make_shared<DispDecimalNumber>(&DispDecimalNumber::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_SIGNED_NUMBER_DISPLAY] =
-            std::make_shared<DispSignedNumber>(&signedNumberDisplayPins, m_appConfig);
+            std::make_shared<DispSignedNumber>(&DispSignedNumber::PINS, m_appConfig);
         m_displays[EVALKIT_DISP_TEST] = std::make_shared<DispTest>(&testDisplayPins, m_appConfig);
 
         std::for_each(m_displays.begin(), m_displays.end(), [](auto& d) { d->init(); });
@@ -116,9 +117,6 @@ class EvalkitDisplays
     static constexpr std::array<int, 7> sevenSegmentBarDisplayPins {PIN_SEG_4, PIN_SEG_3, PIN_SEG_5, PIN_SEG_2,
                                                                     PIN_SEG_6, PIN_SEG_1, PIN_SEG_7};
 
-    static constexpr std::array<int, 15> signedNumberDisplayPins {
-        PIN_SEG_4,  PIN_SEG_2,  PIN_SEG_1,  PIN_SEG_8,  PIN_SEG_7, PIN_SEG_6,  PIN_SEG_3, PIN_SEG_5,
-        PIN_SEG_14, PIN_SEG_13, PIN_SEG_11, PIN_SEG_10, PIN_SEG_9, PIN_SEG_15, PIN_SEG_12};
     static constexpr std::array<int, 15> testDisplayPins {PIN_SEG_1,  PIN_SEG_2,  PIN_SEG_3,  PIN_SEG_4,  PIN_SEG_5,
                                                           PIN_SEG_6,  PIN_SEG_7,  PIN_SEG_8,  PIN_SEG_9,  PIN_SEG_10,
                                                           PIN_SEG_11, PIN_SEG_12, PIN_SEG_13, PIN_SEG_14, PIN_SEG_15};
