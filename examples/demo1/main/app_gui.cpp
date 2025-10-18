@@ -28,7 +28,7 @@ esp_err_t GUI::init()
 
 esp_err_t GUI::show()
 {
-    const std::array<lv_dir_t, evalkit::DisplayInfo::DISP_CNT> dispDirs = {
+    const std::array<lv_dir_t, app::DisplayInfo::DISP_CNT> dispDirs = {
         static_cast<lv_dir_t>(LV_DIR_BOTTOM | LV_DIR_RIGHT), static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
         static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),    static_cast<lv_dir_t>(LV_DIR_VER | LV_DIR_RIGHT),
@@ -42,12 +42,12 @@ esp_err_t GUI::show()
     for (size_t i = 0; i < dispDirs.size(); ++i)
     {
         // Create tile for each display
-        lv_obj_t* tile = lv_tileview_add_tile(tv, 0, static_cast<evalkit::DisplayInfo::Ecd_e>(i), dispDirs[i]);
+        lv_obj_t* tile = lv_tileview_add_tile(tv, 0, static_cast<app::DisplayInfo::ECD_t>(i), dispDirs[i]);
         lv_obj_t* img  = lv_image_create(tile);
-        lv_image_set_src(img, DISP_FILE_MAP.at(static_cast<evalkit::DisplayInfo::Ecd_e>(i)));
+        lv_image_set_src(img, m_dispFileMap.at(static_cast<app::DisplayInfo::ECD_t>(i)));
         lv_obj_center(img);
         // add animation buttons
-        addAnimationButtons(tv, static_cast<evalkit::DisplayInfo::Ecd_e>(i));
+        addAnimationButtons(tv, static_cast<app::DisplayInfo::ECD_t>(i));
     }
 
     bsp_display_unlock();
@@ -73,7 +73,7 @@ static void btnEventHandler(lv_event_t* e)
     }
 }
 
-esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, evalkit::DisplayInfo::Ecd_e display)
+esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, app::DisplayInfo::ECD_t display)
 {
     // add a new tile for animation buttons
     lv_obj_t* tile1 = lv_tileview_add_tile(tv, 1, display, LV_DIR_LEFT);
@@ -89,7 +89,7 @@ esp_err_t GUI::addAnimationButtons(lv_obj_t* tv, evalkit::DisplayInfo::Ecd_e dis
     // add anim buttons
     lv_obj_t* list1 = lv_list_create(tile1);
     lv_obj_set_size(list1, LV_PCT(100), LV_PCT(100));
-    for (const auto& btnName : evalkit::DisplayInfo::DISP_ANIM_NAMES[display])
+    for (const auto& btnName : app::DisplayInfo::m_dispAnimNames[display])
     {
         btnInfos.emplace_back(BtnInfo {display, btnName, nullptr, false, label1});
 

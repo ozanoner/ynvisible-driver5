@@ -3,12 +3,12 @@
 #include <array>
 #include <vector>
 
-namespace evalkit
+namespace app
 {
 
 struct DisplayInfo
 {
-    enum Ecd_e
+    enum ECD_t
     {
         DISP431V2PV1 = 0,
         DISP433V1PV1,
@@ -22,7 +22,7 @@ struct DisplayInfo
         DISP_CNT
     };
 
-    static inline const std::array<std::vector<const char*>, DISP_CNT> DISP_ANIM_NAMES = {
+    static inline const std::array<std::vector<const char*>, DISP_CNT> m_dispAnimNames = {
         {{"Toggle", "Count up", "Count down"},
          {"Toggle", "Count up"},
          {"Toggle", "Count up"},
@@ -33,4 +33,4 @@ struct DisplayInfo
          {"Toggle"},
          {"Toggle", "Count up", "Count down"}}};
 };
-}  // namespace evalkit
+}  // namespace app
