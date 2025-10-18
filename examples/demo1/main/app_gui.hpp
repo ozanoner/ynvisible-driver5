@@ -5,9 +5,9 @@
 #include <map>
 #include <string>
 
+#include "app_disp_info.hpp"
 #include "disp_images.hpp"
 #include "esp_err.h"
-#include "evalkit_displays.hpp"
 
 namespace app
 {
