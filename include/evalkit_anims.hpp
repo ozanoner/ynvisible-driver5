@@ -52,8 +52,6 @@ class EvalkitAnims
         return instance;
     }
 
-    void init(const ynv::app::AppConfig_t* appConfig);
-
     Anim_t    select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp, Anim_t anim);
     AnimBase& getCurrentAnim() { return *(m_anims[m_currentAnim]); }
     bool      isSelected() const { return m_currentAnim != ANIM_CNT && m_anims[m_currentAnim] != nullptr; }
@@ -68,21 +66,23 @@ class EvalkitAnims
                                                                      {ANIM_CNT, "None"}};
 
    private:
-    EvalkitAnims() : m_anims({}), m_currentAnim(ANIM_CNT), m_stateChangeCallback(nullptr) { }
+    EvalkitAnims()
+        : m_anims({}),
+          m_currentAnim(ANIM_CNT),
+          m_stateChangeCallback(nullptr),
+          m_dispIndex(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_CNT)
+    {
+    }
     ~EvalkitAnims()                              = default;
     EvalkitAnims(const EvalkitAnims&)            = delete;
     EvalkitAnims& operator=(const EvalkitAnims&) = delete;
 
     std::array<std::unique_ptr<AnimBase>, ANIM_CNT> m_anims;
+    Anim_t                                          m_currentAnim;
+    StateChangeCallback_f                           m_stateChangeCallback;
+    ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t  m_dispIndex;
 
-    Anim_t                m_currentAnim;
-    StateChangeCallback_f m_stateChangeCallback;
-
-    const ynv::app::AppConfig_t*                   m_appConfig = nullptr;
-    ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t m_disp =
-        ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_CNT;
-
-    void setDisplay();
+    void setDisplay(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp);
 };
 
 }  // namespace anim

@@ -28,18 +28,12 @@
 #include "anim_14.hpp"
 #include "anim_15.hpp"
 #include "anim_test.hpp"
+#include "esp_log.h"
 
 namespace ynv
 {
 namespace anim
 {
-void EvalkitAnims::init(const ynv::app::AppConfig_t* appConfig)
-{
-    assert(appConfig != nullptr);
-    assert(appConfig->displayIndex >= 0 &&
-           appConfig->displayIndex < static_cast<int>(ECDEvalkitDisplay_t::EVALKIT_DISP_CNT));
-    m_appConfig = appConfig;
-}
 
 EvalkitAnims::Anim_t EvalkitAnims::select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp,
                                           EvalkitAnims::Anim_t                           anim)
@@ -47,35 +41,41 @@ EvalkitAnims::Anim_t EvalkitAnims::select(ynv::ecd::EvalkitDisplays::ECDEvalkitD
     assert(anim < ANIM_CNT);
     assert(disp < ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_CNT);
 
-    if (anim == m_currentAnim && disp == m_disp)
+    if (anim == m_currentAnim && disp == m_dispIndex)
     {
         // If the selected animation is already current, do nothing.
         return m_currentAnim;
     }
 
-    if (disp != m_disp)
+    if (disp != m_dispIndex)
     {
-        setDisplay();
-        m_disp = disp;
+        setDisplay(disp);
     }
 
     // Set the current animation to the selected one
     m_currentAnim = anim;
     // Update the callback for state changes
-    m_anims[m_currentAnim]->registerStateChangeCallback(m_stateChangeCallback);
-    m_anims[m_currentAnim]->start();  // Start the newly selected animation
+    ESP_LOGI("select", "disp=%d m_currentAnim=%d null-ptr=%d", disp, m_currentAnim,
+             (m_anims[m_currentAnim] == nullptr));
 
+    if (m_anims[m_currentAnim] != nullptr)
+    {
+        m_anims[m_currentAnim]->registerStateChangeCallback(m_stateChangeCallback);
+        m_anims[m_currentAnim]->start();  // Start the newly selected animation
+    }
     return m_currentAnim;
 }
 
-void EvalkitAnims::setDisplay()
+void EvalkitAnims::setDisplay(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t disp)
 {
-    assert(m_appConfig != nullptr);
-
     m_anims = {};  // reset the list of animations
 
-    auto display = ynv::ecd::EvalkitDisplays::getInstance().getDisplay();
-    switch (static_cast<ECDEvalkitDisplay_t>(m_appConfig->displayIndex))
+    auto& displays = ynv::ecd::EvalkitDisplays::getInstance();
+    auto  display  = displays.selectDisplay(disp);
+    m_dispIndex    = disp;
+    ESP_LOGI("setDisplay", "display-null=%d displayIndex=%d", (display == nullptr), displays.getDisplayIndex());
+
+    switch (displays.getDisplayIndex())
     {
         case ECDEvalkitDisplay_t::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY:
             m_anims[ANIM_TOGGLE] = std::make_unique<AnimToggle>(display);

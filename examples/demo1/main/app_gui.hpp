@@ -36,10 +36,16 @@ class GUI
     struct BtnInfo_t
     {
         const app::disp::DisplayAnimInfo_t* animInfo;
-        std::function<void(lv_event_t*)>*   animHandler;
-        bool                                checked;
+        std::function<void(lv_event_t*)>    animHandler;
         lv_obj_t*                           statusLabel;
+        // bool                                checked;
     };
+
+    void registerButtonHandler(std::function<void(const app::disp::DisplayAnimInfo_t*)> handler)
+    {
+        assert(handler);
+        m_animHandler = handler;
+    }
 
     static constexpr const char* TAG = "GUI";
 
@@ -67,7 +73,8 @@ class GUI
     esp_err_t show();
     esp_err_t addAnimationButtons(lv_obj_t* tv, app::disp::ECD_t display);
 
-    static constexpr size_t MAX_BTN_INFOS = 64;
-    std::vector<BtnInfo_t>  btnInfos;
+    static constexpr size_t                                  MAX_BTN_INFOS = 64;
+    std::vector<BtnInfo_t>                                   btnInfos;
+    std::function<void(const app::disp::DisplayAnimInfo_t*)> m_animHandler = nullptr;
 };
 }  // namespace app

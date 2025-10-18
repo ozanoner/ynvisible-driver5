@@ -81,7 +81,6 @@ class EvalkitDisplays
     {
         assert(appConfig != nullptr);
         m_appConfig = appConfig;  // Store the application configuration
-        assert(appConfig->displayIndex >= 0 && appConfig->displayIndex < EVALKIT_DISP_CNT);
 
         m_displays[EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY] =
             std::make_shared<DispSingleSegment>(&singleSegmentDisplayPins, m_appConfig);
@@ -99,19 +98,23 @@ class EvalkitDisplays
 
         std::for_each(m_displays.begin(), m_displays.end(), [](auto& d) { d->init(); });
 
-        m_displayPtr = m_displays[appConfig->displayIndex];
+        m_dispIndex  = EVALKIT_DISP_TEST;
+        m_displayPtr = m_displays[m_dispIndex];
     }
 
-    std::shared_ptr<ECDBase> getDisplay()
+    std::shared_ptr<ECDBase> getDisplay() const
     {
         assert(m_displayPtr != nullptr);
         return m_displayPtr;
     }
 
+    ECDEvalkitDisplay_t getDisplayIndex() const { return m_dispIndex; }
+
     std::shared_ptr<ECDBase> selectDisplay(ECDEvalkitDisplay_t displayIndex)
     {
         assert(displayIndex >= 0 && displayIndex < EVALKIT_DISP_CNT);
-        m_displayPtr = m_displays[displayIndex];
+        m_dispIndex  = displayIndex;
+        m_displayPtr = m_displays[m_dispIndex];
         assert(m_displayPtr != nullptr);
         return m_displayPtr;
     }
@@ -144,6 +147,7 @@ class EvalkitDisplays
     std::array<std::shared_ptr<ECDBase>, EVALKIT_DISP_CNT> m_displays;    // all displays
     std::shared_ptr<ECDBase>                               m_displayPtr;  // Pointer to the current display
     const ynv::app::AppConfig_t*                           m_appConfig;
+    ECDEvalkitDisplay_t                                    m_dispIndex;
 };
 
 }  // namespace ecd

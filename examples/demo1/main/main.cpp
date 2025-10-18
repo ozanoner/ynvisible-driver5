@@ -24,8 +24,8 @@ static void animTask(void* pvParameters);
 extern "C" void app_main(void)
 {
     // set application config
-    appConfig.hal          = &hal;
-    appConfig.displayIndex = ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST;
+    appConfig.hal = &hal;
+    // appConfig.displayIndex = ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST;
 
     appConfig.activeDriving     = true;
     appConfig.analogResolution  = 12;
@@ -55,10 +55,17 @@ extern "C" void app_main(void)
     // initialise displays
     displays.init(&appConfig);
 
-    // initialise animations
-    anims.init(&appConfig);
-    anims.select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST,
-                 ynv::anim::EvalkitAnims::Anim_t::ANIM_TOGGLE);
+    // anims.select(ynv::ecd::EvalkitDisplays::ECDEvalkitDisplay_t::EVALKIT_DISP_TEST,
+    //              ynv::anim::EvalkitAnims::Anim_t::ANIM_TOGGLE);
+
+    m_gui.registerButtonHandler(
+        [](const app::disp::DisplayAnimInfo_t* info)
+        {
+            if (info != nullptr)
+            {
+                anims.select(info->displayType, info->animType);
+            }
+        });
 
     // Create animation task
     (void)xTaskCreate(animTask, "anim-update", 4096, nullptr, 5, nullptr);
