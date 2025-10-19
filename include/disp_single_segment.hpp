@@ -1,3 +1,7 @@
+/**
+ * @file disp_single_segment.hpp
+ * @brief Single segment ECD driver
+ */
 
 #pragma once
 

@@ -1,3 +1,8 @@
+/**
+ * @file disp_signed_number.hpp
+ * @brief Signed number ECD driver
+ */
+
 #pragma once
 
 #include <array>

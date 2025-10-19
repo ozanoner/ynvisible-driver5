@@ -1,11 +1,8 @@
 /**
  * @file evalkit_anims.cpp
  * @brief  Evaluation Kit animations implementation.
- * @version 0.1
  * @date 2025-08-08
- *
  * @copyright Copyright (c) 2025
- *
  */
 
 #include "evalkit_anims.hpp"

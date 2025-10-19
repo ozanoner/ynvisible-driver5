@@ -1,3 +1,7 @@
+/**
+ * @file disp_3seg_bar.hpp
+ * @brief 3-segment bar electrochromic display driver
+ */
 
 #pragma once
 
@@ -41,6 +45,7 @@ class Disp3SegBar : public ECD<3>
    protected:
     void initConfig() override
     {
+        // TODO: review here
         m_config.coloringVoltage            = (int)(m_config.maxAnalogValue / 2);
         m_config.coloringTime               = 500;
         m_config.bleachingVoltage           = (int)(m_config.maxAnalogValue / 2 * 0.8f);

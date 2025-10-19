@@ -1,3 +1,9 @@
+/**
+ * @file anim_08.hpp
+ * @brief On animation for the single segment display.
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 

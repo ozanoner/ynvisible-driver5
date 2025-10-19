@@ -1,3 +1,9 @@
+/**
+ * @file anim_01.hpp
+ * @brief Toggle animation (available for all display types).
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 

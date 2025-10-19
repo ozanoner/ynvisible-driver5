@@ -1,3 +1,9 @@
+/**
+ * @file anim_15.hpp
+ * @brief Set position animation for the 3-segment bar display.
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 
