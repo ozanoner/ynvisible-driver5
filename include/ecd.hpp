@@ -16,6 +16,26 @@ namespace ynv
 namespace ecd
 {
 
+enum SegmentPins_t
+{
+    // pin-0 is for common
+    PIN_SEG_1  = 1,
+    PIN_SEG_2  = 2,
+    PIN_SEG_3  = 3,
+    PIN_SEG_4  = 4,
+    PIN_SEG_5  = 5,
+    PIN_SEG_6  = 6,
+    PIN_SEG_7  = 7,
+    PIN_SEG_8  = 8,
+    PIN_SEG_9  = 9,
+    PIN_SEG_10 = 10,
+    PIN_SEG_11 = 11,
+    PIN_SEG_12 = 12,
+    PIN_SEG_13 = 13,
+    PIN_SEG_14 = 14,
+    PIN_SEG_15 = 15
+};
+
 class ECDBase
 {
    public:
@@ -34,7 +54,7 @@ template <int SEGMENT_COUNT>
 class ECD : public ECDBase
 {
    public:
-    ECD(const std::array<int, SEGMENT_COUNT>* pins, const ynv::app::AppConfig_t* appConfig)
+    explicit ECD(const std::array<int, SEGMENT_COUNT>* pins, const ynv::app::AppConfig_t* appConfig)
         : m_pins(pins), m_states({}), m_nextStates({}), m_driver(nullptr), m_appConfig(appConfig)
     {
         assert(m_appConfig != nullptr);
@@ -145,16 +165,16 @@ class ECD : public ECDBase
     static constexpr std::array<uint8_t, 10> numberMask()
     {
         return {
-            0b10111111,  // 0
-            0b10000110,  // 1
-            0b11011011,  // 2
-            0b11001111,  // 3
+            0b11111011,  // 0
+            0b11100000,  // 1
+            0b11011101,  // 2
+            0b11110101,  // 3
             0b11100110,  // 4
-            0b11101101,  // 5
-            0b11111101,  // 6
-            0b10000111,  // 7
+            0b10110111,  // 5
+            0b10111111,  // 6
+            0b11100001,  // 7
             0b11111111,  // 8
-            0b11101111   // 9
+            0b11110111   // 9
         };
     }
 };

@@ -62,10 +62,8 @@ template <int SEGMENT_COUNT>
 class ECDDriveBase
 {
    public:
-    ECDDriveBase(const ECDConfig_t*                    config,  // ECD config
-                 const std::array<int, SEGMENT_COUNT>* pins,    // ECD pins
-                 ynv::driver::HALBase*                 hal      // underlying hardware to control pins
-                 )
+    explicit ECDDriveBase(const ECDConfig_t* config, const std::array<int, SEGMENT_COUNT>* pins,
+                          ynv::driver::HALBase* hal)
         : m_config(config), m_pins(pins), m_hal(hal)
     {
     }

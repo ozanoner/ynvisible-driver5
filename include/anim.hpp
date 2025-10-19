@@ -124,7 +124,7 @@ class Anim : public AnimBase
    public:
     static constexpr int TRANSITION_RATE_MS = 5000;  // Transition rate to the next state in milliseconds
 
-    Anim(std::shared_ptr<DisplayT> display) : m_display(display) { }
+    explicit Anim(std::shared_ptr<DisplayT> display) : m_display(display) { }
     virtual ~Anim() = default;
 
     // Update the animation state in a task loop

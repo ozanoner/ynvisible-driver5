@@ -12,7 +12,7 @@ namespace anim
 class Anim15SegDecimalCounterDown : public Anim<ynv::ecd::DispDecimalNumber>
 {
    public:
-    Anim15SegDecimalCounterDown(std::shared_ptr<ynv::ecd::DispDecimalNumber> display)
+    explicit Anim15SegDecimalCounterDown(std::shared_ptr<ynv::ecd::DispDecimalNumber> display)
         : Anim<ynv::ecd::DispDecimalNumber>(display)
     {
     }

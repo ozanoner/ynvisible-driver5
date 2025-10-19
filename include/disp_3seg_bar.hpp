@@ -12,6 +12,8 @@ class Disp3SegBar : public ECD<3>
    public:
     using ECD<3>::ECD;  // Inherit constructors from ECD<3>
 
+    static constexpr std::array<int, 3> PINS {PIN_SEG_2, PIN_SEG_1, PIN_SEG_3};
+
     // Function to toggle the state of the segments
     void increment()
     {

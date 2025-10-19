@@ -12,7 +12,9 @@ namespace anim
 class Anim7SegBarCounterUp : public Anim<ynv::ecd::Disp7SegBar>
 {
    public:
-    Anim7SegBarCounterUp(std::shared_ptr<ynv::ecd::Disp7SegBar> display) : Anim<ynv::ecd::Disp7SegBar>(display) { }
+    explicit Anim7SegBarCounterUp(std::shared_ptr<ynv::ecd::Disp7SegBar> display) : Anim<ynv::ecd::Disp7SegBar>(display)
+    {
+    }
 
    protected:
     void transition() override

@@ -12,7 +12,7 @@ namespace anim
 class Anim15SegSignedNegativeCounterUp : public Anim<ynv::ecd::DispSignedNumber>
 {
    public:
-    Anim15SegSignedNegativeCounterUp(std::shared_ptr<ynv::ecd::DispSignedNumber> display)
+    explicit Anim15SegSignedNegativeCounterUp(std::shared_ptr<ynv::ecd::DispSignedNumber> display)
         : Anim<ynv::ecd::DispSignedNumber>(display)
     {
     }

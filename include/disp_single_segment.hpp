@@ -12,6 +12,8 @@ class DispSingleSegment : public ECD<1>
    public:
     using ECD<1>::ECD;  // Inherit constructors from ECD<1>
 
+    static constexpr std::array<int, 1> PINS {PIN_SEG_1};
+
     void on()
     {
         m_nextStates[0] = true;  // Set the single segment to color state
