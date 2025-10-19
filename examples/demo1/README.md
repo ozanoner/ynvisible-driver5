@@ -15,17 +15,16 @@ The YnVisible EvalKit contains various Electrochromic Display (ECD) samples that
 - **YnVisible EvalKit ECDs**: Various electrochromic display samples
 
 ### ECD Samples in EvalKit
-TODO: update this after finalising the list  
 The evalkit contains the following ECD types:
-- **DISP431V2PV1**: Standard ECD with Toggle, Count up, Count down animations
-- **DISP433V1PV1**: Compact ECD with Toggle, Count up animations  
-- **DISP434V1PV1**: Compact ECD with Toggle, Count up animations
-- **DISP437V2PV1**: Standard ECD with Toggle animation only
-- **DISP438V2PV1**: Standard ECD with Toggle, Count up, Count down animations
-- **DISP440V2PV1**: Standard ECD with Toggle animation only
-- **DISP442V2PV1**: Standard ECD with Toggle animation only  
-- **DISP443V2PV1**: Standard ECD with Toggle animation only
-- **DISP444V1PV2**: Standard ECD with Toggle, Count up, Count down animations
+- **DISP431V2PV1**: 7-Segment Bar Display with Toggle, Count up, Count down animations
+- **DISP433V1PV1**: Decimal Number Display with Toggle, Count up, Count down animations  
+- **DISP434V1PV1**: Dot Number Display with Toggle, Count up, Count down animations
+- **DISP437V2PV1**: Single Segment Display with Toggle animation only
+- **DISP438V2PV1**: 3-Segment Bar Display with Toggle, Count up, Count down animations
+- **DISP440V2PV1**: Single Segment Display with Toggle animation only
+- **DISP442V2PV1**: Single Segment Display with Toggle animation only  
+- **DISP443V2PV1**: Single Segment Display with Toggle animation only
+- **DISP444V1PV2**: Signed Number Display with Toggle, Count up, Count down animations
 
 See [the evalkit documentation](../../docs/evalkit.pdf)
 
@@ -70,9 +69,14 @@ CD74HC4067 ↔ ECDs:
 ## Building and Running
 
 ### Prerequisites
-- ESP-IDF v5.0 or later
-- ESP32-S3-Box3 development board
-- Hardware components (CD74HC4067, MCP4725)
+- **ESP-IDF v5.0 or later** (tested with v5.4)
+- **ESP32-S3-Box3** development board
+- **Hardware components**:
+  - CD74HC4067 16-channel multiplexer
+  - MCP4725 12-bit I2C DAC
+  - YnVisible EvalKit ECDs
+  - Breadboard and jumper wires
+- **Development environment**: VSCode with ESP-IDF extension (recommended)
 
 ### Build Instructions
 ```bash
@@ -87,6 +91,9 @@ idf.py build
 
 # Flash to device
 idf.py flash monitor
+
+# Serial monitoring
+idf.py monitor --print-filter="*:I HAL:W gpio:W ECDDrive:W" -p /dev/ttyACM0 
 ```
 
 ### Configuration Options
@@ -103,16 +110,35 @@ idf.py flash monitor
 4. **Choose animation** to start the electrochromic effect
 5. **Monitor status** through the on-screen indicators
 
-Serial monitoring:   
-```
-$ idf.py monitor --print-filter="*:I HAL:W gpio:W ECDDrive:W" -p /dev/ttyACM0 
-```
 
 ## Project Structure
 
 ```
-TODO: the output of the tree command
+.
+├── main
+│   ├── disp_images
+│   │   ├── disp431v2pv1.c
+│   │   ├── disp433v1pv1.c
+│   │   ├── disp434v1pv1.c
+│   │   ├── disp437v2pv1.c
+│   │   ├── disp438v2pv1.c
+│   │   ├── disp440v2pv1.c
+│   │   ├── disp442v2pv1.c
+│   │   ├── disp443v2pv1.c
+│   │   └── disp444v1pv2.c
+│   ├── CMakeLists.txt
+│   ├── app_disp_info.hpp
+│   ├── app_gui.cpp
+│   ├── app_gui.hpp
+│   ├── disp_images.hpp
+│   ├── idf_component.yml
+│   └── main.cpp
+├── CMakeLists.txt
+├── README.md
+├── partitions.csv
+└── sdkconfig.defaults
 ```
+```main.cpp``` has the application entry point.
 
 ## Technical Notes
 
@@ -131,7 +157,6 @@ TODO: the output of the tree command
 ## Troubleshooting
 
 ### Common Issues
-TODO: update this   
 - **No ECD response**: Check wiring connections and voltage levels
 - **GUI not responding**: Verify LVGL configuration and touch calibration  
 - **I2C communication errors**: Check SDA/SCL connections and pull-up resistors

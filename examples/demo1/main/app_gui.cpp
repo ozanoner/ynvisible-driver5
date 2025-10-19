@@ -1,3 +1,10 @@
+/**
+ * @file app_gui.cpp
+ * @brief GUI management for the application
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
+
 #include "app_gui.hpp"
 
 #include <array>
