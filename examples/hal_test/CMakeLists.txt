@@ -2,8 +2,6 @@
 # CMakeLists in this exact order for cmake to work correctly
 cmake_minimum_required(VERSION 3.16)
 
-set(EXTRA_COMPONENT_DIRS ../.. )
-
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/sdkconfig.user")
     set(SDKCONFIG_DEFAULTS "sdkconfig.defaults;sdkconfig.user")
 else()
@@ -11,5 +9,5 @@ else()
 endif()
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(disp_test)
+project(hal_test)
 

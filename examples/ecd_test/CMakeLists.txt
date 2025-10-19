@@ -11,5 +11,5 @@ else()
 endif()
 
 include($ENV{IDF_PATH}/tools/cmake/project.cmake)
-project(demo1)
+project(ecd_test)
 
