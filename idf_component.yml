@@ -1,0 +1,16 @@
+## IDF Component Manager Manifest File
+
+version: "0.1.0"
+description: "YnVisible EvalKit ECD Driver - ESP-IDF component for driving electrochromic displays"
+tags:
+  - ECD
+  - YnVisible
+  - electrochromic
+  - display
+  - driver
+url: "https://github.com/ozanoner/ynvisible-driver5"
+issues: "https://github.com/ozanoner/ynvisible-driver5/issues"
+documentation: "https://github.com/ozanoner/ynvisible-driver5/blob/master/README.md"
+repository: "https://github.com/ozanoner/ynvisible-driver5.git"
+dependencies:
+  idf: ">=5.0"
