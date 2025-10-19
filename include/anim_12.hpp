@@ -1,3 +1,9 @@
+/**
+ * @file anim_12.hpp
+ * @brief Decrement animation for the 7-segment bar display.
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 

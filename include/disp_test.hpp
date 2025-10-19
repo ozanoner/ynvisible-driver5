@@ -1,3 +1,10 @@
+/**
+ * @file disp_test.hpp
+ * @brief Test ECD driver
+ *
+ * Color one segment at a time for testing purposes.
+ */
+
 #pragma once
 
 #include <cinttypes>

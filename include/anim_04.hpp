@@ -1,3 +1,9 @@
+/**
+ * @file anim_04.hpp
+ * @brief Decrement animation for the 15-segment signed number display.
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 

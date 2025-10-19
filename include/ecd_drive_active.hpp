@@ -1,3 +1,8 @@
+/**
+ * @file ecd_drive_active.hpp
+ * @brief Active driving implementation for ECDs with voltage feedback and refresh control.
+ */
+
 #pragma once
 
 #include <algorithm>
@@ -11,14 +16,21 @@ namespace ynv
 {
 namespace ecd
 {
+/**
+ * @brief Active ECD driver with voltage feedback and refresh control
+ * @tparam SEGMENT_COUNT Number of display segments
+ *
+ * Provides precise voltage control with analog feedback monitoring
+ * and automatic refresh operations to maintain display state.
+ */
 template <int SEGMENT_COUNT>
 class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
 {
    private:
-    std::vector<int> m_colorPins;          // Pins to be colored
-    std::vector<int> m_bleachPins;         // Pins to be bleached
-    std::vector<int> m_colorRefreshPins;   // Pins to be refreshed for coloring
-    std::vector<int> m_bleachRefreshPins;  // Pins to be refreshed for bleaching
+    std::vector<int> m_colorPins;          ///< Pins requiring coloring operation
+    std::vector<int> m_bleachPins;         ///< Pins requiring bleaching operation
+    std::vector<int> m_colorRefreshPins;   ///< Pins needing color refresh
+    std::vector<int> m_bleachRefreshPins;  ///< Pins needing bleach refresh
 
    public:
     ~ECDDriveActive() = default;
@@ -29,12 +41,21 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
     using ECDDriveBase<SEGMENT_COUNT>::m_config;
     using ECDDriveBase<SEGMENT_COUNT>::m_hal;
 
-    static constexpr int MAX_REFRESH_RETRIES = 30;  // Maximum retries for refresh operations
+    /** @brief Maximum refresh attempts before timeout */
+    static constexpr int MAX_REFRESH_RETRIES = 30;
 
+    /**
+     * @brief Drive ECD segments with active voltage monitoring
+     * @param currentStates Current segment states (modified in-place)
+     * @param nextStates Target segment states
+     *
+     * Performs state transitions with voltage feedback and automatic
+     * refresh operations to ensure reliable display operation.
+     */
     void drive(std::array<bool, SEGMENT_COUNT>&       currentStates,
                const std::array<bool, SEGMENT_COUNT>& nextStates) override
     {
-
+        // Clear and reserve pin vectors for efficiency
         m_colorPins.clear();
         m_bleachPins.clear();
         m_colorRefreshPins.clear();
@@ -45,10 +66,11 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
         m_colorRefreshPins.reserve(SEGMENT_COUNT);
         m_bleachRefreshPins.reserve(SEGMENT_COUNT);
 
+        // Categorize segments by required operation
         for (int i = 0; i < SEGMENT_COUNT; ++i)
         {
             if (currentStates[i] == nextStates[i])
-            {  // refresh
+            {  // Refresh existing state
                 if (currentStates[i])
                 {
                     m_colorRefreshPins.push_back((*m_pins)[i]);
@@ -59,7 +81,7 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
                 }
             }
             else
-            {  // change state
+            {  // Change state
                 if (nextStates[i])
                 {
                     m_colorPins.push_back((*m_pins)[i]);
@@ -68,11 +90,11 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
                 {
                     m_bleachPins.push_back((*m_pins)[i]);
                 }
-                currentStates[i] = nextStates[i];  // Update the current state
+                currentStates[i] = nextStates[i];
             }
         }
 
-        // change state
+        // Execute state changes
         for (const auto& pin : m_colorPins)
         {
             m_hal->digitalWrite(pin, true, m_config->coloringTime,
@@ -83,12 +105,12 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
             m_hal->digitalWrite(pin, false, m_config->bleachingTime, m_config->bleachingVoltage);
         }
 
-        // refresh
+        // Refresh loop with voltage monitoring
         bool done {m_colorRefreshPins.size() == 0 && m_bleachRefreshPins.size() == 0};
         int  retries {0};
         while (!done && retries < MAX_REFRESH_RETRIES)
         {
-            // now check the segments which are still not refreshed
+            // Remove segments that have reached target voltage
             m_colorRefreshPins.erase(std::remove_if(m_colorRefreshPins.begin(), m_colorRefreshPins.end(),
                                                     [&](int pin)
                                                     {
@@ -112,7 +134,7 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
             {
                 ESP_LOGI(TAG, "Refresh attempt %d", retries);
 
-                // lets refresh the segments first
+                // Apply refresh pulses to remaining segments
                 for (const auto& pin : m_colorRefreshPins)
                 {
                     m_hal->digitalWrite(pin, true, m_config->refreshColorPulseTime,
@@ -125,15 +147,13 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
                                         m_config->refreshBleachingVoltage);
                 }
             }
-
-        }  // refresh while
+        }
 
         if (!done)
         {
             ESP_LOGW(TAG, "Refresh operation did not complete within %d retries", MAX_REFRESH_RETRIES);
         }
-
-    }  // drive
+    }
 };
 }  // namespace ecd
 }  // namespace ynv

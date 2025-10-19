@@ -1,3 +1,9 @@
+/**
+ * @file anim_13.hpp
+ * @brief Increment animation for the 3-segment bar display.
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 

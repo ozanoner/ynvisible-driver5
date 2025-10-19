@@ -1,3 +1,8 @@
+/**
+ * @file ecd.hpp
+ * @brief Core electrochromic display (ECD) classes and interfaces
+ */
+
 #pragma once
 
 #include <array>
@@ -16,44 +21,66 @@ namespace ynv
 namespace ecd
 {
 
+/**
+ * @brief Segment pin enumeration for ECDs
+ *
+ * Defines pin numbers for up to 15 segments (pin 0 reserved for common electrode)
+ */
 enum SegmentPins_t
 {
     // pin-0 is for common
-    PIN_SEG_1  = 1,
-    PIN_SEG_2  = 2,
-    PIN_SEG_3  = 3,
-    PIN_SEG_4  = 4,
-    PIN_SEG_5  = 5,
-    PIN_SEG_6  = 6,
-    PIN_SEG_7  = 7,
-    PIN_SEG_8  = 8,
-    PIN_SEG_9  = 9,
-    PIN_SEG_10 = 10,
-    PIN_SEG_11 = 11,
-    PIN_SEG_12 = 12,
-    PIN_SEG_13 = 13,
-    PIN_SEG_14 = 14,
-    PIN_SEG_15 = 15
+    PIN_SEG_1  = 1,   ///< Segment 1 pin
+    PIN_SEG_2  = 2,   ///< Segment 2 pin
+    PIN_SEG_3  = 3,   ///< Segment 3 pin
+    PIN_SEG_4  = 4,   ///< Segment 4 pin
+    PIN_SEG_5  = 5,   ///< Segment 5 pin
+    PIN_SEG_6  = 6,   ///< Segment 6 pin
+    PIN_SEG_7  = 7,   ///< Segment 7 pin
+    PIN_SEG_8  = 8,   ///< Segment 8 pin
+    PIN_SEG_9  = 9,   ///< Segment 9 pin
+    PIN_SEG_10 = 10,  ///< Segment 10 pin
+    PIN_SEG_11 = 11,  ///< Segment 11 pin
+    PIN_SEG_12 = 12,  ///< Segment 12 pin
+    PIN_SEG_13 = 13,  ///< Segment 13 pin
+    PIN_SEG_14 = 14,  ///< Segment 14 pin
+    PIN_SEG_15 = 15   ///< Segment 15 pin
 };
 
+/**
+ * @brief Abstract base class for all ECD implementations
+ *
+ * Defines common interface for electrochromic display operations
+ */
 class ECDBase
 {
    public:
     ~ECDBase() = default;
 
-    virtual void init()                               = 0;  // Initialize the ECD
-    virtual void reset()                              = 0;  // Reset the ECD to bleach state
-    virtual void set()                                = 0;  // Set all segments to color state
-    virtual void set(const std::vector<bool>& states) = 0;  // Set segments to specified states
-    virtual void update()                             = 0;  // Apply m_nextStates to hardware
-    virtual void toggle()                             = 0;  // Toggle the state of all segments
-    virtual void printConfig() const                  = 0;  // Print the configuration of the ECD
+    virtual void init()                               = 0;  ///< Initialize the ECD
+    virtual void reset()                              = 0;  ///< Reset to bleach state
+    virtual void set()                                = 0;  ///< Set all segments to color state
+    virtual void set(const std::vector<bool>& states) = 0;  ///< Set specific segment states
+    virtual void update()                             = 0;  ///< Apply pending state changes
+    virtual void toggle()                             = 0;  ///< Toggle all segment states
+    virtual void printConfig() const                  = 0;  ///< Print configuration
 };
 
+/**
+ * @brief Template ECD class for multi-segment displays
+ * @tparam SEGMENT_COUNT Number of segments in the display
+ *
+ * Provides state management, configuration, and driving capabilities
+ * with support for both active and passive driving modes.
+ */
 template <int SEGMENT_COUNT>
 class ECD : public ECDBase
 {
    public:
+    /**
+     * @brief Constructor
+     * @param pins Array of GPIO pin numbers for segments
+     * @param appConfig Application configuration
+     */
     explicit ECD(const std::array<int, SEGMENT_COUNT>* pins, const ynv::app::AppConfig_t* appConfig)
         : m_pins(pins), m_states({}), m_nextStates({}), m_driver(nullptr), m_appConfig(appConfig)
     {
@@ -62,78 +89,91 @@ class ECD : public ECDBase
 
     ~ECD() = default;
 
+    /**
+     * @brief Initialize ECD with configuration and driver
+     */
     void init() override
     {
-        m_config.maxAnalogValue = (1 << m_appConfig->analogResolution) - 1;  // Set max analog value based on resolution
-        initConfig();  // Initialize the ECD with default configuration
+        m_config.maxAnalogValue = (1 << m_appConfig->analogResolution) - 1;
+        initConfig();
         validateConfig();
 
+        // Create appropriate driver based on configuration
         if (m_appConfig->activeDriving)
         {
-            m_driver = std::make_unique<ECDDriveActive<SEGMENT_COUNT>>(  // Create the driving algorithm instance
+            m_driver = std::make_unique<ECDDriveActive<SEGMENT_COUNT>>(
                 &m_config, m_pins, static_cast<ynv::driver::HALBase*>(m_appConfig->hal));
         }
         else
         {
-            m_driver = std::make_unique<ECDDrivePassive<SEGMENT_COUNT>>(  // Create the driving algorithm instance
+            m_driver = std::make_unique<ECDDrivePassive<SEGMENT_COUNT>>(
                 &m_config, m_pins, static_cast<ynv::driver::HALBase*>(m_appConfig->hal));
         }
         assert(m_driver != nullptr);
     }
 
-    void reset() override
-    {
-        m_nextStates.fill(false);  // All segments to bleach state
-    }
+    /** @brief Reset all segments to bleached state */
+    void reset() override { m_nextStates.fill(false); }
 
-    void set() override
-    {
-        m_nextStates.fill(true);  // All segments to color state
-    }
+    /** @brief Set all segments to colored state */
+    void set() override { m_nextStates.fill(true); }
 
+    /** @brief Toggle current state of all segments */
     void toggle() override
     {
         for (int i = 0; i < SEGMENT_COUNT; ++i)
         {
-            m_nextStates[i] = !m_states[i];  // Toggle each segment state
+            m_nextStates[i] = !m_states[i];
         }
     }
 
+    /**
+     * @brief Set specific segment states
+     * @param states Vector of segment states (true=color, false=bleach)
+     */
     void set(const std::vector<bool>& states) override
     {
         assert(states.size() == SEGMENT_COUNT);
         std::copy(states.begin(), states.end(), m_nextStates.begin());
     }
 
-    // Animation will call this method to apply the next states to the hardware in a task loop.
-    // NOTE: The total execution time may exceed one cycle of the animation.
+    /**
+     * @brief Apply pending state changes to hardware
+     *
+     * Called by animation loop to drive segments to their target states
+     */
     void update() override
     {
         assert(m_driver != nullptr);
-        m_driver->drive(m_states, m_nextStates);  // Drive the segments based on current and next states
+        m_driver->drive(m_states, m_nextStates);
     }
 
-    void printConfig() const override
-    {
-        m_config.print();  // Print the configuration of the ECD
-    }
+    /** @brief Print ECD configuration parameters */
+    void printConfig() const override { m_config.print(); }
 
-    int getSegmentCount() const
-    {
-        return SEGMENT_COUNT;  // Return the number of segments
-    }
+    /**
+     * @brief Get number of segments
+     * @return Segment count
+     */
+    int getSegmentCount() const { return SEGMENT_COUNT; }
 
    protected:
-    const std::array<int, SEGMENT_COUNT>* m_pins;        // Array to hold segment pin numbers
-    std::array<bool, SEGMENT_COUNT>       m_states;      // Array to hold segment states (bleach=false or color=true)
-    std::array<bool, SEGMENT_COUNT>       m_nextStates;  // Array to hold next states for segments
-    ECDConfig_t                           m_config;      // Configuration for the ECD
+    const std::array<int, SEGMENT_COUNT>* m_pins;        ///< Segment pin numbers
+    std::array<bool, SEGMENT_COUNT>       m_states;      ///< Current segment states
+    std::array<bool, SEGMENT_COUNT>       m_nextStates;  ///< Target segment states
+    ECDConfig_t                           m_config;      ///< ECD configuration parameters
 
-    std::unique_ptr<ECDDriveBase<SEGMENT_COUNT>> m_driver;  // Driving algorithm for the ECD
-    const ynv::app::AppConfig_t*                 m_appConfig;
+    std::unique_ptr<ECDDriveBase<SEGMENT_COUNT>> m_driver;     ///< Driving algorithm instance
+    const ynv::app::AppConfig_t*                 m_appConfig;  ///< Application configuration
 
-    virtual void initConfig() = 0;  // Initialize the ECD with default configuration
+    /** @brief Initialize display-specific configuration (pure virtual) */
+    virtual void initConfig() = 0;
 
+    /**
+     * @brief Validate configuration parameters
+     *
+     * Ensures all voltage and timing values are within acceptable ranges
+     */
     void validateConfig()
     {
         assert(m_config.maxAnalogValue > 0);
@@ -162,6 +202,10 @@ class ECD : public ECDBase
         assert(m_config.refreshBleachLimitLVoltage < (m_config.maxAnalogValue / 2));
     }
 
+    /**
+     * @brief 7-segment number display patterns
+     * @return Array of bit patterns for digits 0-9
+     */
     static constexpr std::array<uint8_t, 10> numberMask()
     {
         return {

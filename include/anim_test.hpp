@@ -1,3 +1,9 @@
+/**
+ * @file anim_test.hpp
+ * @brief Test animation to color each segment in sequence.
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 

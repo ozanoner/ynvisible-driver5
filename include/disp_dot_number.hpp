@@ -1,3 +1,7 @@
+/**
+ * @file disp_dot_number.hpp
+ * @brief Dot number ECD driver
+ */
 
 #pragma once
 

@@ -1,3 +1,8 @@
+/**
+ * @file disp_decimal_number.hpp
+ * @brief Decimal number ECD driver
+ */
+
 #pragma once
 
 #include <array>

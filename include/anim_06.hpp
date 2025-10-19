@@ -1,3 +1,9 @@
+/**
+ * @file anim_06.hpp
+ * @brief Increment animation for the 15-segment decimal number display.
+ * @date 2025-10-19
+ * @copyright Copyright (c) 2025
+ */
 
 #pragma once
 
