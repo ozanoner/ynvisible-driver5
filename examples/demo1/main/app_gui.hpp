@@ -1,9 +1,17 @@
+/**
+ * @file app_gui.hpp
+ * @brief GUI management for YnVisible EvalKit demonstration
+ */
+
+#pragma once
+
 #include <cinttypes>
 #include <cstdlib>
 #include <cstring>
 #include <functional>
 #include <map>
 #include <string>
+#include <vector>
 
 #include "app_disp_info.hpp"
 #include "bsp/esp-bsp.h"
@@ -13,34 +21,45 @@
 namespace app
 {
 /**
- * @brief GUI class for managing the graphical user interface
+ * @brief Singleton GUI manager using LVGL for display selection and animation control
  */
 class GUI
 {
    public:
-    // Get the singleton instance
+    /**
+     * @brief Get singleton instance
+     * @return Reference to GUI instance
+     */
     static GUI& getInstance()
     {
         static GUI instance;
         return instance;
     }
 
-    // Delete copy constructor and assignment operator
     GUI(const GUI&)            = delete;
     GUI& operator=(const GUI&) = delete;
+    ~GUI()                     = default;
 
-    ~GUI() = default;
-
+    /**
+     * @brief Initialize GUI system and create UI layout
+     * @return ESP_OK on success
+     */
     esp_err_t init();
 
+    /**
+     * @brief Button information structure
+     */
     struct BtnInfo_t
     {
-        const app::disp::DisplayAnimInfo_t* animInfo;
-        std::function<void(lv_event_t*)>    animHandler;
-        lv_obj_t*                           statusLabel;
-        // bool                                checked;
+        const app::disp::DisplayAnimInfo_t* animInfo;     ///< Animation info
+        std::function<void(lv_event_t*)>    animHandler;  ///< Event handler
+        lv_obj_t*                           statusLabel;  ///< Status label
     };
 
+    /**
+     * @brief Register callback for animation button events
+     * @param handler Callback function
+     */
     void registerButtonHandler(std::function<void(const app::disp::DisplayAnimInfo_t*)> handler)
     {
         assert(handler);
@@ -50,11 +69,10 @@ class GUI
     static constexpr const char* TAG = "GUI";
 
    private:
-    // Private constructor
     GUI() = default;
 
     /**
-     * @brief RAII class for GUI locking
+     * @brief RAII display lock
      */
     class GUILock
     {
@@ -63,6 +81,7 @@ class GUI
         ~GUILock() { bsp_display_unlock(); }
     };
 
+    /** @brief Mapping from ECD types to display images */
     static inline const std::map<app::disp::ECD_t, const lv_image_dsc_t*> m_dispFileMap = {
         {app::disp::DISP431V2PV1, &disp431v2pv1}, {app::disp::DISP433V1PV1, &disp433v1pv1},
         {app::disp::DISP434V1PV1, &disp434v1pv1}, {app::disp::DISP437V2PV1, &disp437v2pv1},
