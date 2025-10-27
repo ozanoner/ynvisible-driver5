@@ -1,43 +1,28 @@
-# YnVisible EvalKit ECD Driver
+# Ynvisible EvalKit-5 ECD Driver
 
-ESP-IDF component for driving YnVisible electrochromic displays (ECDs) on ESP32 platforms. This component provides a comprehensive hardware abstraction layer and animation system for controlling various types of electrochromic displays.
+ESP-IDF component for driving Ynvisible electrochromic displays (ECDs) on ESP32 platforms. This component provides a comprehensive hardware abstraction layer and animation system for controlling various types of electrochromic displays.
 
 ## Features
 
-- **Multiple ECD Support**: Compatible with 9 different YnVisible EvalKit display types
-- **Hardware Abstraction**: Unified interface for controller hardware
+- **Multiple ECD Support**: Compatible with 9 different Ynvisible EvalKit display types
+- **Hardware Abstraction**: Unified interface for ECD control hardware
 - **Animation System**: Built-in animations including toggle, count up/down, and test patterns
 - **Flexible Configuration**: Support for both active and passive driving modes
 - **Thread-Safe**: FreeRTOS compatible with proper synchronization
 - **Modern C++**: Leverages C++17 features
 
-## Supported Hardware
+## Supported Displays
 
-### Electrochromic Displays
-- **Single Segment**: DISP437V2PV1, DISP440V2PV1, DISP442V2PV1, DISP443V2PV1
-- **Multi-Segment**: DISP438V2PV1 (3-segment), DISP431V2PV1 (7-segment)
-- **Numeric Displays**: DISP433V1PV1 (decimal), DISP434V1PV1 (dot), DISP444V1PV2 (signed)
+### Ynvisible ECD Types
+- **Single Segment**: Basic on/off display functionality
+- **Multi-Segment Bar**: 3-segment and 7-segment bar displays
+- **Numeric Displays**: Decimal numbers, dot matrix, and signed numbers
 
 ## Compatibility
 ESP-IDF 5.0 or newer
 
 
 ## Quick Start
-
-### Installation
-
-Add this component to your ESP-IDF project:
-
-```bash
-idf.py add-dependency "ynvisible/evalkit_ecd_driver"
-```
-
-Or add to `main/idf_component.yml`:
-
-```yaml
-dependencies:
-  ynvisible/evalkit_ecd_driver: "^0.1.0"
-```
 
 ### Basic Usage
 
@@ -46,50 +31,61 @@ dependencies:
 #include "evalkit_anims.hpp"
 #include "app_hal.hpp"
 
-// Initialize hardware
-auto& hal = app::hal::HAL::getInstance();
-auto& displays = ynv::ecd::EvalkitDisplays::getInstance();
-auto& anims = ynv::anim::EvalkitAnims::getInstance();
+extern "C" void app_main(void)
+{
+    // Initialize display manager
+    auto& displays = ynv::ecd::EvalkitDisplays::getInstance();
+    auto& anims = ynv::anim::EvalkitAnims::getInstance();
 
-// Configure application
-ynv::app::AppConfig_t config = {
-    .hal = &hal,
-    .activeDriving = true,
-    .analogResolution = 12,
-    .maxSegmentVoltage = 2048,
-    .highPinVoltage = 1638
+    // Configure application (implement your HAL)
+    ynv::app::AppConfig_t config = {
+        .activeDriving = true,
+        .analogResolution = 12,
+        .maxSegmentVoltage = ynv::app::AppConfig_t::MAX_SEGMENT_VOLTAGE,
+        .highPinVoltage = ynv::app::AppConfig_t::HIGH_PIN_VOLTAGE,
+        .hal = your_hal_instance  // Implement ynv::driver::HALBase
+    };
+
+    // Initialize displays
+    displays.init(&config);
+
+    // Start animation
+    anims.select(ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY,
+                 ynv::anim::EvalkitAnims::ANIM_TOGGLE);
+
+    // Animation loop
+    while (true) {
+        if (anims.isSelected()) {
+            anims.getCurrentAnim().update();
+        }
+        vTaskDelay(pdMS_TO_TICKS(1000));
+    }
+}
+```
+
+### Implementing Hardware Abstraction Layer
+
+Create your own HAL implementation by inheriting from `ynv::driver::HALBase`:
+
+```cpp
+#include "ynv_hal.hpp"
+
+class MyHAL : public ynv::driver::HALBase
+{
+public:
+    esp_err_t digitalWrite(int pin, bool high, int delay = 10, int common = 0) override
+    {
+        // Implement your digital write with timing and common electrode control
+        return ESP_OK;
+    }
+
+    int analogRead(int pin) override
+    {
+        // Implement your analog read functionality
+        return analog_value;
+    }
 };
-
-// Initialize hardware (CD74HC4067 & MCP4725 in the demo app)
-hal.init(&config,
-    // Multiplexer pins
-    {.s0 = GPIO_NUM_11, .s1 = GPIO_NUM_9, .s2 = GPIO_NUM_14, 
-     .s3 = GPIO_NUM_13, .signal = GPIO_NUM_10, .enable = GPIO_NUM_12},
-    // DAC configuration  
-    {.i2cAddr = 0x60, .i2cSdaGpio = GPIO_NUM_38, 
-     .i2cSclGpio = GPIO_NUM_41, .i2cFreqHz = 100000});
-
-displays.init(&config);
-anims.init(&config);
-
-// Start animation
-anims.select(ynv::ecd::EvalkitDisplays::EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY,
-             ynv::anim::EvalkitAnims::ANIM_TOGGLE);
 ```
-
-### Configuration
-
-Configure the component via menuconfig:
-
-```bash
-idf.py menuconfig
-# Navigate to: Component config → YnVisible EvalKit
-```
-
-Key configuration options:
-- **Driving Mode**: Active (precise) or Passive (basic) 
-- **Voltage Levels**: Maximum segment and high pin voltages
-- **Timing Parameters**: Refresh intervals and retry counts
 
 ## API Reference
 
@@ -111,22 +107,23 @@ anims.select(displayType, animationType);
 anims.getCurrentAnim().update();
 ```
 
-#### `HAL` (Hardware Abstraction Layer)
-Low-level hardware control:
+#### `HALBase`
+Hardware abstraction interface (implement in your application):
 ```cpp
-auto& hal = app::hal::HAL::getInstance();
-hal.init(&config, muxConfig, dacConfig);
+class YourHAL : public ynv::driver::HALBase {
+    // Implement digitalWrite() and analogRead()
+};
 ```
 
 ### Display Types
 
-| Enum Value | Description | Segments |
-|------------|-------------|----------|
+| Display Type | Description | Segments |
+|-------------|-------------|----------|
 | `EVALKIT_DISP_SINGLE_SEGMENT_DISPLAY` | Single segment | 1 |
 | `EVALKIT_DISP_THREE_SEGMENT_BAR_DISPLAY` | 3-segment bar | 3 |
 | `EVALKIT_DISP_SEVEN_SEGMENT_BAR_DISPLAY` | 7-segment bar | 7 |
-| `EVALKIT_DISP_DOT_NUMBER_DISPLAY` | Dot matrix number | 12 |
-| `EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY` | Decimal number | 13 |
+| `EVALKIT_DISP_DOT_NUMBER_DISPLAY` | Dot number | 8 |
+| `EVALKIT_DISP_DECIMAL_NUMBER_DISPLAY` | Decimal number | 15 |
 | `EVALKIT_DISP_SIGNED_NUMBER_DISPLAY` | Signed number | 15 |
 
 ### Animation Types
@@ -138,29 +135,53 @@ hal.init(&config, muxConfig, dacConfig);
 | `ANIM_DOWN` | Count down sequence | Multi-segment displays |
 | `ANIM_TEST` | Test pattern | All displays |
 
+### Configuration Structure
+
+```cpp
+struct AppConfig_t {
+    bool activeDriving;          // Active (precise) vs passive (basic) driving
+    int analogResolution;        // ADC/DAC resolution in bits
+    int maxSegmentVoltage;       // Maximum segment voltage (ADC units)
+    int highPinVoltage;          // High pin voltage level (ADC units)
+    void* hal;                   // HAL implementation pointer
+    
+    static const int MAX_SEGMENT_VOLTAGE = 1400;  // Safe ECD voltage limit
+    static const int HIGH_PIN_VOLTAGE = 3300;     // GPIO high level
+};
+```
+
 ## Examples
 
-### Minimal Display Test
-See [`examples/disp_test`](examples/disp_test/) for a basic ECD test without GUI.
+The component includes reference implementations:
 
-### Full GUI Demo  
-See [`examples/demo`](examples/demo/) for a complete touchscreen interface using LVGL.
+- **Display Test**: Minimal ECD validation without GUI
+- **GUI Demo**: Complete touchscreen interface using LVGL  
+- **HAL Test**: Hardware component testing examples
 
-### HAL Component Test
-See [`examples/hal_test`](examples/hal_test/) for testing multiplexer and DAC functionality.
+*Note: Examples show specific hardware implementations for reference. Adapt the HAL layer to your hardware setup.*
+
+## Architecture
+
+```
+Your Application
+├── Your HAL Implementation (ynv::driver::HALBase)
+├── Ynvisible ECD Driver Component
+│   ├── Display Management (EvalkitDisplays)
+│   ├── Animation System (EvalkitAnims) 
+│   ├── ECD Classes (Single/Multi-segment)
+│   └── Drive Algorithms (Active/Passive)
+└── Your Hardware (Multiplexer, DAC, ECDs)
+```
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the LICENSE file for details.
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 ## Support
 
-- **Documentation**: [YnVisible EvalKit Guide](https://www.ynvisible.com/)
-- **Component Registry**: [ESP Component Registry](https://components.espressif.com/)
-- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
+- **Issues**: [GitHub Issues](https://github.com/ozanoner/ynvisible-driver5/issues)
 
 ## References
 
-- [YnVisible Arduino Library](https://github.com/Ynvisible-Electronics/YNV-Driver-v5-Arduino-Library)
-- [YnVisible Official Website](https://www.ynvisible.com/)
-- [ESP-IDF Programming Guide](https://docs.espressif.com/projects/esp-idf/en/latest/)
+- [Ynvisible Arduino Library](https://github.com/Ynvisible-Electronics/YNV-Driver-v5-Arduino-Library)
+- [Ynvisible Evalution Kit-5 Guide](https://www.ynvisible.com/product/e-paper-display-kit)
