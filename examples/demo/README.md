@@ -1,10 +1,10 @@
-# YnVisible EvalKit Demo with ESP32-S3-Box3
+# Ynvisible EvalKit Demo with ESP32-S3-Box3
 
-This demo showcases the YnVisible EvalKit using ESP32-S3-Box3 development board with custom driver hardware instead of the original YnVisible driver board.
+This demo showcases the Ynvisible EvalKit-5 using ESP32-S3-Box3 development board with custom driver hardware instead of the original Ynvisible driver board.
 
 ## Overview
 
-The YnVisible EvalKit contains various Electrochromic Display (ECD) samples that can be controlled to demonstrate different visual effects and animations. This implementation uses ESP32-S3-Box3 as the main controller with additional hardware components to drive the ECDs.
+The Ynvisible EvalKit contains various Electrochromic Display (ECD) samples that can be controlled to demonstrate different visual effects and animations. This implementation uses ESP32-S3-Box3 as the main controller with additional hardware components to drive the ECDs.
 
 ## Hardware Setup
 
@@ -12,7 +12,7 @@ The YnVisible EvalKit contains various Electrochromic Display (ECD) samples that
 - **ESP32-S3-Box3**: Main development board with integrated display and touch interface
 - **CD74HC4067**: 16-channel analog multiplexer for ECD selection
 - **MCP4725**: 12-bit I2C DAC for true analog output
-- **YnVisible EvalKit ECDs**: Various electrochromic display samples
+- **Ynvisible EvalKit ECDs**: Various electrochromic display samples
 
 ### ECD Samples in EvalKit
 The evalkit contains the following ECD types:
@@ -74,7 +74,7 @@ CD74HC4067 ↔ ECDs:
 - **Hardware components**:
   - CD74HC4067 16-channel multiplexer
   - MCP4725 12-bit I2C DAC
-  - YnVisible EvalKit ECDs
+  - Ynvisible EvalKit ECDs
   - Breadboard and jumper wires
 - **Development environment**: VSCode with ESP-IDF extension (recommended)
 
@@ -184,4 +184,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 For questions and support:
 - Check the troubleshooting section
 - Review ESP-IDF documentation
-- Consult YnVisible EvalKit documentation
+- Consult Ynvisible EvalKit documentation

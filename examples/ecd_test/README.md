@@ -1,4 +1,4 @@
-# YnVisible EvalKit Display Test
+# Ynvisible EvalKit Display Test
 
 A minimal test application for validating electrochromic display (ECD) functionality without GUI overhead. This project provides a bare-bones environment for testing display drivers and animation systems.
 
@@ -18,7 +18,7 @@ This application demonstrates basic ECD operation by:
 ### Components
 - **CD74HC4067** 16-channel analog multiplexer
 - **MCP4725** 12-bit I2C DAC
-- **YnVisible EvalKit ECDs** (any type for basic testing)
+- **Ynvisible EvalKit ECDs** (any type for basic testing)
 - Breadboard and jumper wires for connections
 
 ### Wiring Configuration
@@ -176,5 +176,5 @@ idf.py monitor --print-filter="*:D"
 For issues and questions:
 1. Check the troubleshooting section above
 2. Review ESP-IDF documentation
-3. Consult YnVisible EvalKit hardware documentation
+3. Consult Ynvisible EvalKit hardware documentation
 4. Check component datasheets (CD74HC4067, MCP4725)

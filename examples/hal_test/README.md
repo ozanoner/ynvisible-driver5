@@ -30,7 +30,3 @@ Datasheet: https://www.ti.com/lit/ds/symlink/cd74hc4067.pdf
 ### MCP4725
 12-bit digital-to-analog converter with I2C communication interface.   
 Datasheet: https://ww1.microchip.com/downloads/en/devicedoc/22039d.pdf
-
-## Contributing
-
-Please follow the project's coding standards and include appropriate tests for new features.

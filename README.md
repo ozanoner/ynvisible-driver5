@@ -1,4 +1,6 @@
 # Ynvisible EvalKit-5 ECD Driver
+[![Component Registry](https://components.espressif.com/components/ozanoner/ynvisible-driver5/badge.svg)](https://components.espressif.com/components/ozanoner/ynvisible-driver5)
+
 
 ESP-IDF component for driving Ynvisible electrochromic displays (ECDs) on ESP32 platforms. This component provides a comprehensive hardware abstraction layer and animation system for controlling various types of electrochromic displays.
 
