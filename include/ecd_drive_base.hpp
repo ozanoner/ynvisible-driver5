@@ -5,6 +5,7 @@
 #pragma once
 
 #include <array>
+#include <mutex>
 
 #include "esp_log.h"
 #include "ynv_hal.hpp"
@@ -111,9 +112,10 @@ class ECDDriveBase
    protected:
     static constexpr const char* TAG = "ECDDrive";
 
-    const ECDConfig_t*                    m_config;  ///< ECD configuration parameters
-    const std::array<int, SEGMENT_COUNT>* m_pins;    ///< GPIO pin assignments for segments
-    ynv::driver::HALBase*                 m_hal;     ///< Hardware abstraction layer
+    const ECDConfig_t*                    m_config;      ///< ECD configuration parameters
+    const std::array<int, SEGMENT_COUNT>* m_pins;        ///< GPIO pin assignments for segments
+    ynv::driver::HALBase*                 m_hal;         ///< Hardware abstraction layer
+    std::mutex                            m_driveMutex;  ///< Mutex for thread-safe drive operations
 };
 }  // namespace ecd
 }  // namespace ynv
