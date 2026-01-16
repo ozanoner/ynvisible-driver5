@@ -13,6 +13,7 @@ The Ynvisible EvalKit contains various Electrochromic Display (ECD) samples that
 - **CD74HC4067**: 16-channel analog multiplexer for ECD selection
 - **MCP4725**: 12-bit I2C DAC for true analog output
 - **Ynvisible EvalKit ECDs**: Various electrochromic display samples
+- **FPC-16P 0.5mm**: Connector for the displays
 
 ### ECD Samples in EvalKit
 The evalkit contains the following ECD types:
@@ -44,7 +45,9 @@ ESP32-S3-Box3 ↔ MCP4725 (address: 0x60):
 
 CD74HC4067 ↔ ECDs:
 - C1-C15 ↔ ECD channels (C0 is NOT connected)
-- COM ↔ MCP4725 output (voltage reference)
+
+MCP4725 ↔ ECDs:
+- MCP4725 Vout ↔ COM (voltage reference)
 ```
 
 ## Software Features
