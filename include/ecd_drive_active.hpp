@@ -34,7 +34,7 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
 
     void doColorBleach()
     {
-        bool done {m_colorPins.size() == 0 && m_bleachPins.size() == 0};
+        bool done {m_colorPins.empty() && m_bleachPins.empty()};
         int  retries {0};
 
         if (done)
@@ -74,7 +74,7 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
                                               }),
                                m_bleachPins.end());
 
-            done = (m_colorPins.size() == 0 && m_bleachPins.size() == 0);
+            done = (m_colorPins.empty() && m_bleachPins.empty());
 
             if (!done)
             {
@@ -118,7 +118,7 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
                                   m_bleachRefreshPins.end());
 
         // Refresh loop with voltage monitoring
-        bool done {m_colorRefreshPins.size() == 0 && m_bleachRefreshPins.size() == 0};
+        bool done {m_colorRefreshPins.empty() && m_bleachRefreshPins.empty()};
         int  retries {0};
 
         if (done)
@@ -158,7 +158,7 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
                                                      }),
                                       m_bleachRefreshPins.end());
 
-            done = (m_colorRefreshPins.size() == 0 && m_bleachRefreshPins.size() == 0);
+            done = (m_colorRefreshPins.empty() && m_bleachRefreshPins.empty());
         } while (!done && ++retries < MAX_REFRESH_RETRIES);
 
         if (!done)
