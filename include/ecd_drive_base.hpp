@@ -96,7 +96,11 @@ class ECDDriveBase
     {
     }
 
-    virtual ~ECDDriveBase() = default;
+    virtual ~ECDDriveBase()                      = default;
+    ECDDriveBase(const ECDDriveBase&)            = delete;
+    ECDDriveBase& operator=(const ECDDriveBase&) = delete;
+    ECDDriveBase(ECDDriveBase&&)                 = delete;
+    ECDDriveBase& operator=(ECDDriveBase&&)      = delete;
 
     /**
      * @brief Drive ECD segments from current to next states
