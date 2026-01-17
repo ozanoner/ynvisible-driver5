@@ -5,6 +5,7 @@
 #pragma once
 
 #include <array>
+#include <mutex>
 
 #include "ecd_drive_base.hpp"
 #include "ynv_hal.hpp"
@@ -30,7 +31,7 @@ class ECDDrivePassive : public ECDDriveBase<SEGMENT_COUNT>
     using ECDDriveBase<SEGMENT_COUNT>::m_pins;
     using ECDDriveBase<SEGMENT_COUNT>::m_config;
     using ECDDriveBase<SEGMENT_COUNT>::m_hal;
-
+    using ECDDriveBase<SEGMENT_COUNT>::m_driveMutex;
     /**
      * @brief Drive ECD segments with passive control
      * @param currentStates Current segment states (updated to match nextStates)
@@ -42,6 +43,7 @@ class ECDDrivePassive : public ECDDriveBase<SEGMENT_COUNT>
     void drive(std::array<bool, SEGMENT_COUNT>&       currentStates,
                const std::array<bool, SEGMENT_COUNT>& nextStates) override
     {
+        std::lock_guard<std::mutex> lock(m_driveMutex);
         for (int i = 0; i < SEGMENT_COUNT; ++i)
         {
             // Apply voltage based on desired state (true=color, false=bleach)

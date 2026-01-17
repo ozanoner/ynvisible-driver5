@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <array>
+#include <mutex>
 #include <vector>
 
 #include "ecd_drive_base.hpp"
@@ -175,6 +176,7 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
     using ECDDriveBase<SEGMENT_COUNT>::m_pins;
     using ECDDriveBase<SEGMENT_COUNT>::m_config;
     using ECDDriveBase<SEGMENT_COUNT>::m_hal;
+    using ECDDriveBase<SEGMENT_COUNT>::m_driveMutex;
 
     /** @brief Maximum refresh attempts before timeout */
     static constexpr int MAX_REFRESH_RETRIES = 30;
@@ -193,6 +195,8 @@ class ECDDriveActive : public ECDDriveBase<SEGMENT_COUNT>
     void drive(std::array<bool, SEGMENT_COUNT>&       currentStates,
                const std::array<bool, SEGMENT_COUNT>& nextStates) override
     {
+        std::lock_guard<std::mutex> lock(m_driveMutex);
+
         // Clear and reserve pin vectors for efficiency
         m_colorPins.clear();
         m_bleachPins.clear();
